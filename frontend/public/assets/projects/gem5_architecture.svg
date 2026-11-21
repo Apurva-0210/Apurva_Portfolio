@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#090a0f;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="gCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141620" />
+      <stop offset="100%" stop-color="#0c0d14" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="#090a0f" />
+
+  <!-- Header -->
+  <rect x="40" y="30" width="1120" height="70" rx="12" fill="url(#gCardGrad)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="70" cy="65" r="10" fill="#38bdf8" />
+  <text x="94" y="71" fill="#ffffff" font-size="20" font-weight="700" letter-spacing="1">gem5 RESEARCH</text>
+  <text x="280" y="71" fill="#888ea8" font-size="14">Memory Hierarchy &amp; Network-on-Chip (NoC) Performance Analysis</text>
+  <rect x="940" y="48" width="190" height="34" rx="8" fill="rgba(56,189,248,0.15)" stroke="rgba(56,189,248,0.4)" />
+  <text x="955" y="70" fill="#38bdf8" font-size="12" font-weight="600">IIT Guwahati Summer Lab</text>
+
+  <!-- Left: Core &amp; L1/L2 Cache Hierarchy -->
+  <g transform="translate(40, 130)">
+    <rect width="360" height="510" rx="14" fill="url(#gCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1.5">STAGE 01 · CPU CORES &amp; L1/L2</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Multi-Core Memory Front</text>
+
+    <!-- Core 0 to Core 3 -->
+    <g transform="translate(20, 95)">
+      <rect width="320" height="110" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">4x X86 Out-of-Order (O3) Cores</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Clock: 2.5 GHz · SPEC CPU2017 Workloads</text>
+      <rect x="16" y="65" width="135" height="32" rx="4" fill="#202336" />
+      <text x="26" y="85" fill="#38bdf8" font-size="11" font-family="monospace">L1-I: 32kB 2-Way</text>
+      <rect x="160" y="65" width="135" height="32" rx="4" fill="#202336" />
+      <text x="170" y="85" fill="#38bdf8" font-size="11" font-family="monospace">L1-D: 64kB 2-Way</text>
+    </g>
+
+    <!-- L2 Cache -->
+    <g transform="translate(20, 225)">
+      <rect width="320" height="120" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Private L2 Caches (256 KB 8-Way)</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">LRU / Pseudo-LRU Replacement Policies</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Hit Latency: 12 cycles · Miss Latency Profiling</text>
+      <text x="16" y="100" fill="#a3e635" font-size="11" font-family="monospace">AMAT (Average Memory Access Time) Evaluated</text>
+    </g>
+
+    <!-- Source Instrumentation -->
+    <g transform="translate(20, 365)">
+      <rect width="320" height="115" rx="10" fill="#181a26" stroke="rgba(56,189,248,0.2)" />
+      <text x="16" y="28" fill="#38bdf8" font-size="13" font-weight="700">Source-Level C++ Probes</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">gem5 v25.1.0.1 custom stat collectors</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Detailed cache miss penalty breakdown</text>
+      <text x="16" y="96" fill="#ffffff" font-size="11" font-family="monospace">Python config scripts + Docker testbed</text>
+    </g>
+  </g>
+
+  <!-- Middle: Ruby Cache Coherence &amp; Garnet NoC -->
+  <g transform="translate(430, 130)">
+    <rect width="370" height="510" rx="14" fill="url(#gCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#e2281d" font-size="12" font-weight="700" letter-spacing="1.5">STAGE 02 · INTERCONNECT &amp; COHERENCE</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Garnet 4x4 Mesh NoC</text>
+
+    <!-- Coherence Protocol -->
+    <g transform="translate(20, 95)">
+      <rect width="330" height="110" rx="10" fill="#181a26" stroke="rgba(226,40,29,0.3)" />
+      <text x="16" y="28" fill="#ff6b61" font-size="14" font-weight="700">Ruby MESI_Two_Level Protocol</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">SLICC State Machine Compilation</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Modified, Exclusive, Shared, Invalid states</text>
+      <text x="16" y="96" fill="#ff6b61" font-size="11" font-family="monospace">Zero Invalidation Deadlock Verified</text>
+    </g>
+
+    <!-- Garnet Mesh Grid Graphic -->
+    <g transform="translate(20, 225)">
+      <rect width="330" height="255" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="26" fill="#ffffff" font-size="13" font-weight="600">4x4 2D Mesh Router Topology</text>
+      
+      <!-- 16 Router Nodes -->
+      <g transform="translate(45, 45)">
+        <circle cx="30" cy="30" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="90" cy="30" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="150" cy="30" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="210" cy="30" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+
+        <circle cx="30" cy="80" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="90" cy="80" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="150" cy="80" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="210" cy="80" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+
+        <circle cx="30" cy="130" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="90" cy="130" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="150" cy="130" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+        <circle cx="210" cy="130" r="12" fill="#202336" stroke="#38bdf8" stroke-width="2" />
+
+        <!-- Interconnect lines -->
+        <path d="M 30 30 H 210 M 30 80 H 210 M 30 130 H 210" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" />
+        <path d="M 30 30 V 130 M 90 30 V 130 M 150 30 V 130 M 210 30 V 130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" />
+      </g>
+      <text x="24" y="215" fill="#888ea8" font-size="12">XY Routing vs Adaptive Routing arbitration</text>
+      <text x="24" y="235" fill="#38bdf8" font-size="11" font-family="monospace">Virtual Channels: 4 per router port</text>
+    </g>
+  </g>
+
+  <!-- Right: Shared LLC &amp; Main Memory -->
+  <g transform="translate(830, 130)">
+    <rect width="330" height="510" rx="14" fill="url(#gCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#a3e635" font-size="12" font-weight="700" letter-spacing="1.5">STAGE 03 · MEMORY &amp; STATS</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Memory Controller &amp; Metrics</text>
+
+    <g transform="translate(20, 95)">
+      <rect width="290" height="120" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Shared L3 / LLC</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Capacity: 16 MB 16-Way set associative</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Non-inclusive directory-backed structure</text>
+      <text x="16" y="100" fill="#a3e635" font-size="11" font-family="monospace">Miss Latency to DRAM: ~60 ns</text>
+    </g>
+
+    <g transform="translate(20, 235)">
+      <rect width="290" height="120" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">DDR4 Memory Controller</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">DDR4-2400 Dual-Channel</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Bank conflict &amp; row-buffer hit evaluation</text>
+      <text x="16" y="100" fill="#38bdf8" font-size="11" font-family="monospace">Queue depth: Read/Write scheduling</text>
+    </g>
+
+    <g transform="translate(20, 375)">
+      <rect width="290" height="105" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Experimental Findings</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">NoC flit latency vs injection rate knee</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">L2 cache prefetch impact on SPEC 2017</text>
+      <text x="16" y="94" fill="#a3e635" font-size="11" font-family="monospace">Reproducible Docker image suite</text>
+    </g>
+  </g>
+</svg>

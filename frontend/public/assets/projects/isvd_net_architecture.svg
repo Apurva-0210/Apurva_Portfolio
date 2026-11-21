@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#090a0f;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="iCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141620" />
+      <stop offset="100%" stop-color="#0c0d14" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="#090a0f" />
+
+  <!-- Header -->
+  <rect x="40" y="30" width="1120" height="70" rx="12" fill="url(#iCardGrad)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="70" cy="65" r="10" fill="#ec4899" />
+  <text x="94" y="71" fill="#ffffff" font-size="20" font-weight="700" letter-spacing="1">ISVD-Net</text>
+  <text x="210" y="71" fill="#888ea8" font-size="14">Attention Speed-Sign Detection &amp; Closed-Loop Vehicle Speed Governance</text>
+  <rect x="960" y="48" width="170" height="34" rx="8" fill="rgba(236,72,153,0.15)" stroke="rgba(236,72,153,0.4)" />
+  <text x="975" y="70" fill="#f472b6" font-size="12" font-weight="600">Hailo-8L · OBD-II / CAN</text>
+
+  <!-- Left: Perception &amp; YOLOv8-CBAM -->
+  <g transform="translate(40, 130)">
+    <rect width="360" height="510" rx="14" fill="url(#iCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#f472b6" font-size="12" font-weight="700" letter-spacing="1.5">PIPELINE 01 · PERCEPTION</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">YOLOv8-CBAM Detector</text>
+
+    <g transform="translate(20, 95)">
+      <rect width="320" height="110" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Indian Road Video Feed</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">1080p forward camera at 30 FPS</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">CLAHE + YCbCr contrast illumination boost</text>
+      <text x="16" y="96" fill="#f472b6" font-size="11" font-family="monospace">Temporal frame buffer: 5-frame sliding window</text>
+    </g>
+
+    <g transform="translate(20, 225)">
+      <rect width="320" height="135" rx="10" fill="#181a26" stroke="rgba(236,72,153,0.3)" />
+      <text x="16" y="28" fill="#f472b6" font-size="14" font-weight="700">CBAM Attention Module</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Channel Attention: max &amp; avg pooling</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Spatial Attention: inter-spatial feature refinement</text>
+      <text x="16" y="94" fill="#888ea8" font-size="12">Suppresses clutter from trees, billboards, wires</text>
+      <text x="16" y="118" fill="#ffffff" font-size="11" font-family="monospace">mAP50: 91.4% on IndiaSignDB</text>
+    </g>
+
+    <g transform="translate(20, 380)">
+      <rect width="320" height="100" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="13" font-weight="600">Hailo-8L Edge Acceleration</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Quantized INT8 inference at 34 FPS</text>
+      <text x="16" y="72" fill="#a3e635" font-size="11" font-family="monospace">Raspberry Pi 5 host · &lt;4.5W power envelope</text>
+    </g>
+  </g>
+
+  <!-- Middle: Dual-Stream Attention-LSTM -->
+  <g transform="translate(430, 130)">
+    <rect width="370" height="510" rx="14" fill="url(#iCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1.5">PIPELINE 02 · TEMPORAL REASONING</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Dual-Stream Attention-LSTM</text>
+
+    <!-- Stream A -->
+    <g transform="translate(20, 95)">
+      <rect width="330" height="95" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="26" fill="#f472b6" font-size="13" font-weight="700">Stream A: Visual Spatial Features</text>
+      <text x="16" y="48" fill="#888ea8" font-size="12">Bounding box coordinates + class embeddings</text>
+      <text x="16" y="70" fill="#888ea8" font-size="12">Spatial LSTM tracks visual persistence</text>
+    </g>
+
+    <!-- Stream B -->
+    <g transform="translate(20, 205)">
+      <rect width="330" height="95" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="26" fill="#38bdf8" font-size="13" font-weight="700">Stream B: Telemetry Dynamics</text>
+      <text x="16" y="48" fill="#888ea8" font-size="12">OBD-II vehicle speed, accel &amp; throttle position</text>
+      <text x="16" y="70" fill="#888ea8" font-size="12">Dynamics LSTM models vehicle state context</text>
+    </g>
+
+    <!-- Cross Attention &amp; 3-Frame Gate -->
+    <g transform="translate(20, 315)">
+      <rect width="330" height="165" rx="10" fill="#181a26" stroke="rgba(56,189,248,0.3)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Cross-Stream Attention Fusion</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Weights visual evidence against speed context</text>
+      
+      <rect x="16" y="65" width="298" height="42" rx="6" fill="#202336" />
+      <text x="26" y="90" fill="#fcd34d" font-size="12" font-weight="700">Three-Frame Confirmation Gate</text>
+
+      <text x="16" y="125" fill="#888ea8" font-size="12">Rejects single-frame noise &amp; motion blur</text>
+      <text x="16" y="147" fill="#a3e635" font-size="11" font-family="monospace">False Positive Rate reduced to 2.4%</text>
+    </g>
+  </g>
+
+  <!-- Right: Closed-Loop Governance &amp; CAN -->
+  <g transform="translate(830, 130)">
+    <rect width="330" height="510" rx="14" fill="url(#iCardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#a3e635" font-size="12" font-weight="700" letter-spacing="1.5">PIPELINE 03 · VEHICLE ACTUATION</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Closed-Loop Control</text>
+
+    <g transform="translate(20, 95)">
+      <rect width="290" height="110" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Proportional Speed Ramp</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Smooth throttle override curve</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Prevents passenger discomfort or abrupt jerks</text>
+      <text x="16" y="96" fill="#a3e635" font-size="11" font-family="monospace">94.6% Successful Engagements</text>
+    </g>
+
+    <g transform="translate(20, 225)">
+      <rect width="290" height="120" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">CAN Bus / ELM327 Interface</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">ISO 15765-4 CAN 500kbps protocol</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Direct Engine ECU communication</text>
+      <text x="16" y="96" fill="#38bdf8" font-size="11" font-family="monospace">Mean latency: 148 ± 22 ms</text>
+    </g>
+
+    <g transform="translate(20, 365)">
+      <rect width="290" height="115" rx="10" fill="#181a26" stroke="rgba(239,68,68,0.3)" />
+      <text x="16" y="28" fill="#fca5a5" font-size="14" font-weight="700">Fail-Safe Watchdog</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Monitors camera dropout &amp; bus errors</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Instantly releases throttle to driver control</text>
+      <text x="16" y="96" fill="#fca5a5" font-size="11" font-family="monospace">Zero uncommanded overrides</text>
+    </g>
+  </g>
+</svg>

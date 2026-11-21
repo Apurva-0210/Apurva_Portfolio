@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" width="1536" height="1024">
+  <defs>
+    <radialGradient id="heroBgGlow" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#99111C" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#790B13" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#460408" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="dieCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF0DC" stop-opacity="0.22"/>
+      <stop offset="50%" stop-color="#FF3846" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#790B13" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ivoryTrace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0DC" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#FFDDB3" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#FFF0DC" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="busLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFF0DC" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#FFF0DC" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#FFF0DC" stop-opacity="0.15"/>
+    </linearGradient>
+    <pattern id="pcbGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#FFF0DC" stroke-width="0.75" stroke-opacity="0.08"/>
+      <circle cx="24" cy="24" r="1.2" fill="#FFF0DC" fill-opacity="0.12"/>
+      <circle cx="0" cy="0" r="1.5" fill="#FFF0DC" fill-opacity="0.18"/>
+    </pattern>
+    <pattern id="denseChipGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="none" stroke="#FFF0DC" stroke-width="0.5" stroke-opacity="0.06"/>
+    </pattern>
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1536" height="1024" fill="url(#heroBgGlow)"/>
+  <rect width="1536" height="1024" fill="url(#pcbGrid)"/>
+  <circle cx="768" cy="512" r="540" fill="url(#dieCoreGlow)"/>
+
+  <!-- Outer Semiconductor Wafer Ring -->
+  <circle cx="768" cy="512" r="460" fill="none" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="8 6"/>
+  <circle cx="768" cy="512" r="440" fill="none" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.18"/>
+  <circle cx="768" cy="512" r="390" fill="none" stroke="#FFF0DC" stroke-width="2" stroke-opacity="0.35"/>
+  <circle cx="768" cy="512" r="380" fill="none" stroke="#FF4D4D" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4 8"/>
+
+  <!-- Angle Ticks & Coordinate Markings -->
+  <g stroke="#FFF0DC" stroke-width="1.2" stroke-opacity="0.4">
+    <line x1="768" y1="42" x2="768" y2="72"/>
+    <line x1="768" y1="952" x2="768" y2="982"/>
+    <line x1="298" y1="512" x2="328" y2="512"/>
+    <line x1="1208" y1="512" x2="1238" y2="512"/>
+    <line x1="436" y1="180" x2="456" y2="200"/>
+    <line x1="1100" y1="180" x2="1080" y2="200"/>
+    <line x1="436" y1="844" x2="456" y2="824"/>
+    <line x1="1100" y1="844" x2="1080" y2="824"/>
+  </g>
+
+  <!-- Silicon Chip Core Substrate -->
+  <rect x="448" y="222" width="640" height="580" rx="16" fill="#52060B" stroke="#FFF0DC" stroke-width="2.5" stroke-opacity="0.6"/>
+  <rect x="458" y="232" width="620" height="560" rx="12" fill="url(#denseChipGrid)"/>
+  <rect x="470" y="244" width="596" height="536" rx="8" fill="none" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="6 4"/>
+
+  <!-- Inner Processing Blocks -->
+  <!-- 1. Quad-Core Computing Cluster (RISC-V / ARM Cores) -->
+  <g transform="translate(492, 266)">
+    <rect width="256" height="230" rx="8" fill="#5C080E" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <rect x="10" y="10" width="112" height="96" rx="4" fill="#6A0A10" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="66" y="52" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">CORE 0</text>
+    <text x="66" y="70" fill="#FFF0DC" fill-opacity="0.75" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">L1-I / L1-D</text>
+
+    <rect x="134" y="10" width="112" height="96" rx="4" fill="#6A0A10" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="190" y="52" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">CORE 1</text>
+    <text x="190" y="70" fill="#FFF0DC" fill-opacity="0.75" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">L1-I / L1-D</text>
+
+    <rect x="10" y="118" width="112" height="96" rx="4" fill="#6A0A10" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="66" y="160" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">CORE 2</text>
+    <text x="66" y="178" fill="#FFF0DC" fill-opacity="0.75" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">L1-I / L1-D</text>
+
+    <rect x="134" y="118" width="112" height="96" rx="4" fill="#6A0A10" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="190" y="160" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">CORE 3</text>
+    <text x="190" y="178" fill="#FFF0DC" fill-opacity="0.75" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">L1-I / L1-D</text>
+  </g>
+
+  <!-- 2. Shared L2 Cache & gem5 Ruby Interconnect Mesh -->
+  <g transform="translate(768, 266)">
+    <rect width="276" height="110" rx="8" fill="#63090F" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <text x="138" y="44" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1.5">SHARED L2 CACHE (4MB)</text>
+    <text x="138" y="66" fill="#FFF0DC" fill-opacity="0.8" font-family="'Space Grotesk', system-ui, sans-serif" font-size="10" text-anchor="middle">gem5 MESI_Two_Level Coherence</text>
+    <line x1="20" y1="84" x2="256" y2="84" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4 4"/>
+  </g>
+
+  <!-- 3. Garnet 4x4 Network-on-Chip (NoC) Crossbar Routing -->
+  <g transform="translate(768, 392)">
+    <rect width="276" height="104" rx="8" fill="#58080E" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <text x="138" y="40" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1.2">GARNET NoC ROUTER MATRIX</text>
+    <g stroke="#FFF0DC" stroke-width="1.2" stroke-opacity="0.5">
+      <circle cx="56" cy="72" r="8" fill="#790B13"/>
+      <circle cx="110" cy="72" r="8" fill="#790B13"/>
+      <circle cx="166" cy="72" r="8" fill="#790B13"/>
+      <circle cx="220" cy="72" r="8" fill="#790B13"/>
+      <line x1="64" y1="72" x2="102" y2="72"/>
+      <line x1="118" y1="72" x2="158" y2="72"/>
+      <line x1="174" y1="72" x2="212" y2="72"/>
+    </g>
+  </g>
+
+  <!-- 4. Edge AI / Vision Accelerator (YOLOv8-CBAM & Transformer) -->
+  <g transform="translate(492, 516)">
+    <rect width="256" height="136" rx="8" fill="#660A10" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <text x="128" y="46" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1.5">EDGE NPU / CBAM ENGINE</text>
+    <text x="128" y="70" fill="#FFF0DC" fill-opacity="0.8" font-family="'Space Grotesk', system-ui, sans-serif" font-size="10" text-anchor="middle">Attention Spatial-Channel Unit</text>
+    <text x="128" y="90" fill="#FFF0DC" fill-opacity="0.65" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">Hailo-8L / INT8 Quantized Core</text>
+    <rect x="24" y="106" width="208" height="12" rx="3" fill="#790B13" stroke="#FFF0DC" stroke-width="0.8" stroke-opacity="0.3"/>
+    <rect x="26" y="108" width="160" height="8" rx="2" fill="#FFF0DC" fill-opacity="0.85"/>
+  </g>
+
+  <!-- 5. Automotive CAN-FD, SPI & Sensor Telemetry Controller -->
+  <g transform="translate(768, 516)">
+    <rect width="276" height="136" rx="8" fill="#5E090F" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <text x="138" y="46" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1.5">AUTOMOTIVE ADAS &amp; CAN-FD</text>
+    <text x="138" y="70" fill="#FFF0DC" fill-opacity="0.8" font-family="'Space Grotesk', system-ui, sans-serif" font-size="10" text-anchor="middle">ISO 15765-4 / OBD-II Diagnostics</text>
+    <text x="138" y="90" fill="#FFF0DC" fill-opacity="0.65" font-family="'Space Grotesk', system-ui, sans-serif" font-size="9" text-anchor="middle">Multi-Modal Radar · LiDAR · CARLA Bridge</text>
+    <g transform="translate(30, 106)" stroke="#FFF0DC" stroke-width="1" stroke-opacity="0.45" fill="none">
+      <path d="M 0 6 L 36 6 L 42 0 L 78 0 L 84 12 L 120 12 L 126 6 L 216 6"/>
+    </g>
+  </g>
+
+  <!-- 6. Memory Controller & High-Speed I/O Bus (Bottom Bar) -->
+  <g transform="translate(492, 672)">
+    <rect width="552" height="74" rx="8" fill="#4B0509" stroke="#FFF0DC" stroke-width="1.5" stroke-opacity="0.5"/>
+    <text x="276" y="32" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2">DDR5 / LPDDR4x MEMORY CONTROLLER &amp; PCIe GEN4 PHY</text>
+    <!-- Via Contact Pads Array -->
+    <g fill="#FFF0DC" fill-opacity="0.75">
+      <circle cx="36" cy="52" r="3"/>
+      <circle cx="72" cy="52" r="3"/>
+      <circle cx="108" cy="52" r="3"/>
+      <circle cx="144" cy="52" r="3"/>
+      <circle cx="180" cy="52" r="3"/>
+      <circle cx="216" cy="52" r="3"/>
+      <circle cx="252" cy="52" r="3"/>
+      <circle cx="288" cy="52" r="3"/>
+      <circle cx="324" cy="52" r="3"/>
+      <circle cx="360" cy="52" r="3"/>
+      <circle cx="396" cy="52" r="3"/>
+      <circle cx="432" cy="52" r="3"/>
+      <circle cx="468" cy="52" r="3"/>
+      <circle cx="504" cy="52" r="3"/>
+    </g>
+  </g>
+
+  <!-- High-Density Circuit Traces Fanning Out Left and Right -->
+  <g stroke="#FFF0DC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.65">
+    <!-- Left Fan-out Bus Lines -->
+    <path d="M 448 300 L 340 300 L 260 220 L 120 220"/>
+    <circle cx="120" cy="220" r="4" fill="#FFF0DC"/>
+    <path d="M 448 350 L 320 350 L 220 280 L 80 280"/>
+    <circle cx="80" cy="280" r="4" fill="#FFF0DC"/>
+    <path d="M 448 440 L 300 440 L 180 390 L 60 390"/>
+    <circle cx="60" cy="390" r="4" fill="#FFF0DC"/>
+    <path d="M 448 520 L 310 520 L 190 590 L 90 590"/>
+    <circle cx="90" cy="590" r="4" fill="#FFF0DC"/>
+    <path d="M 448 610 L 330 610 L 240 700 L 110 700"/>
+    <circle cx="110" cy="700" r="4" fill="#FFF0DC"/>
+    <path d="M 448 700 L 360 700 L 270 810 L 140 810"/>
+    <circle cx="140" cy="810" r="4" fill="#FFF0DC"/>
+
+    <!-- Right Fan-out Bus Lines -->
+    <path d="M 1088 300 L 1196 300 L 1276 220 L 1416 220"/>
+    <circle cx="1416" cy="220" r="4" fill="#FFF0DC"/>
+    <path d="M 1088 350 L 1216 350 L 1316 280 L 1456 280"/>
+    <circle cx="1456" cy="280" r="4" fill="#FFF0DC"/>
+    <path d="M 1088 440 L 1236 440 L 1356 390 L 1476 390"/>
+    <circle cx="1476" cy="390" r="4" fill="#FFF0DC"/>
+    <path d="M 1088 520 L 1226 520 L 1346 590 L 1446 590"/>
+    <circle cx="1446" cy="590" r="4" fill="#FFF0DC"/>
+    <path d="M 1088 610 L 1206 610 L 1296 700 L 1426 700"/>
+    <circle cx="1426" cy="700" r="4" fill="#FFF0DC"/>
+    <path d="M 1088 700 L 1176 700 L 1266 810 L 1396 810"/>
+    <circle cx="1396" cy="810" r="4" fill="#FFF0DC"/>
+  </g>
+
+  <!-- Technical Telemetry Labels Left & Right -->
+  <g fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" font-size="11" letter-spacing="1">
+    <text x="130" y="212" opacity="0.8">CLK_DIFF_100MHZ [PLL_0]</text>
+    <text x="90" y="272" opacity="0.8">CAN_HIGH / LOW [ECU_BUS]</text>
+    <text x="70" y="382" opacity="0.8">UART_0_TXRX [TELEMETRY]</text>
+    <text x="100" y="582" opacity="0.8">SPI_MOSI [ADC_SENSORS]</text>
+    <text x="120" y="692" opacity="0.8">I2C_SDA_SCL [COMPOSITE_GAS]</text>
+    <text x="150" y="802" opacity="0.8">ETH_TSN [CARLA_BRIDGE]</text>
+
+    <text x="1270" y="212" opacity="0.8" text-anchor="end">DDR5_DQ[0..63] [DATA_BUS]</text>
+    <text x="1310" y="272" opacity="0.8" text-anchor="end">PCIe_GEN4_LANE[0..3]</text>
+    <text x="1350" y="382" opacity="0.8" text-anchor="end">JTAG_SWD [DEBUG_PORT]</text>
+    <text x="1340" y="582" opacity="0.8" text-anchor="end">GPIO_PWM [MOTOR_ACTUATOR]</text>
+    <text x="1290" y="692" opacity="0.8" text-anchor="end">NPU_DMA [CBAM_STREAM]</text>
+    <text x="1260" y="802" opacity="0.8" text-anchor="end">RST_PWR_GOOD [SYS_CTRL]</text>
+  </g>
+
+  <!-- Title / Chip Identity Metadata Block (Subtle Watermark in Corner) -->
+  <g transform="translate(48, 930)" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif">
+    <text x="0" y="0" font-size="13" font-weight="700" letter-spacing="1.5" opacity="0.9">APURVA KUMAR // HARDWARE-SYSTEMS SOC ARCHITECTURE</text>
+    <text x="0" y="18" font-size="10" opacity="0.65" letter-spacing="1">PROCESS NODE: 16nm FINFET · gem5 v25.1 · FreeRTOS · CARLA SIMULATION</text>
+  </g>
+  <g transform="translate(1488, 930)" fill="#FFF0DC" font-family="'Space Grotesk', system-ui, sans-serif" text-anchor="end">
+    <text x="0" y="0" font-size="13" font-weight="700" letter-spacing="1.5" opacity="0.9">STATUS: DETERMINISTIC PASS</text>
+    <text x="0" y="18" font-size="10" opacity="0.65" letter-spacing="1">CYCLE-ACCURATE TIMING VERIFIED</text>
+  </g>
+</svg>

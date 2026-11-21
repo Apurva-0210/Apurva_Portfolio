@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#090a0f;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141620" />
+      <stop offset="100%" stop-color="#0c0d14" />
+    </linearGradient>
+    <linearGradient id="crimsonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e2281d" />
+      <stop offset="100%" stop-color="#ff5247" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background grid -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+  </pattern>
+  <rect width="1200" height="680" fill="url(#grid)" />
+
+  <!-- Header -->
+  <rect x="40" y="30" width="1120" height="70" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="70" cy="65" r="10" fill="#e2281d" />
+  <text x="94" y="71" fill="#ffffff" font-size="20" font-weight="700" letter-spacing="1">AUTERA</text>
+  <text x="200" y="71" fill="#888ea8" font-size="14">India-Calibrated Heavy Commercial Vehicle ADAS Framework</text>
+  <rect x="980" y="48" width="150" height="34" rx="8" fill="rgba(226,40,29,0.15)" stroke="rgba(226,40,29,0.4)" />
+  <text x="1002" y="70" fill="#ff6b61" font-size="12" font-weight="600">CARLA · RoadRunner</text>
+
+  <!-- Left Column: Sensors &amp; Multi-Modal Perception -->
+  <g transform="translate(40, 130)">
+    <rect width="320" height="510" rx="14" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#ff6b61" font-size="12" font-weight="700" letter-spacing="1.5">LAYER 01 · PERCEPTION</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Multi-Sensor Ingestion</text>
+
+    <!-- Sensor 1: 128-Beam LiDAR -->
+    <g transform="translate(20, 95)">
+      <rect width="280" height="85" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="36" cy="36" r="14" fill="rgba(56,189,248,0.15)" />
+      <path d="M 30 36 L 42 36 M 36 30 L 36 42" stroke="#38bdf8" stroke-width="2" />
+      <text x="64" y="34" fill="#ffffff" font-size="14" font-weight="600">128-Beam 3D LiDAR</text>
+      <text x="64" y="52" fill="#888ea8" font-size="12">Point Cloud Segmentation &amp; Depth</text>
+      <text x="64" y="70" fill="#38bdf8" font-size="11" font-family="monospace">100m Range · ±2cm Error</text>
+    </g>
+
+    <!-- Sensor 2: 77GHz Doppler Radar -->
+    <g transform="translate(20, 195)">
+      <rect width="280" height="85" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="36" cy="36" r="14" fill="rgba(245,158,11,0.15)" />
+      <circle cx="36" cy="36" r="6" stroke="#f59e0b" stroke-width="2" fill="none" />
+      <text x="64" y="34" fill="#ffffff" font-size="14" font-weight="600">77 GHz Doppler Radar</text>
+      <text x="64" y="52" fill="#888ea8" font-size="12">Longitudinal Relative Velocity</text>
+      <text x="64" y="70" fill="#f59e0b" font-size="11" font-family="monospace">High-Precision Radial Velocity</text>
+    </g>
+
+    <!-- Sensor 3: Ultrasonic &amp; Lane Sensor -->
+    <g transform="translate(20, 295)">
+      <rect width="280" height="85" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="36" cy="36" r="14" fill="rgba(163,230,53,0.15)" />
+      <path d="M 28 40 C 32 32 40 32 44 40" stroke="#a3e635" stroke-width="2" fill="none" />
+      <text x="64" y="34" fill="#ffffff" font-size="14" font-weight="600">Ultrasonic + Lane Sense</text>
+      <text x="64" y="52" fill="#888ea8" font-size="12">Blind-Spot &amp; Edge Marking</text>
+      <text x="64" y="70" fill="#a3e635" font-size="11" font-family="monospace">Side Clearence Arrays</text>
+    </g>
+
+    <!-- Sensor 4: Forward Monocular Camera -->
+    <g transform="translate(20, 395)">
+      <rect width="280" height="85" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="36" cy="36" r="14" fill="rgba(236,72,153,0.15)" />
+      <rect x="30" y="30" width="12" height="12" rx="2" stroke="#ec4899" stroke-width="2" fill="none" />
+      <text x="64" y="34" fill="#ffffff" font-size="14" font-weight="600">Forward Vision (RGB)</text>
+      <text x="64" y="52" fill="#888ea8" font-size="12">Indian Traffic Object Classifier</text>
+      <text x="64" y="70" fill="#ec4899" font-size="11" font-family="monospace">Auto-Rickshaw / Two-Wheeler</text>
+    </g>
+  </g>
+
+  <!-- Connectors from Left to Middle -->
+  <path d="M 360 380 L 430 380" stroke="#ff5247" stroke-width="2" stroke-dasharray="6,4" />
+  <polygon points="430,375 440,380 430,385" fill="#ff5247" />
+
+  <!-- Center Column: Multi-Sensor Fusion &amp; Adaptive TTC -->
+  <g transform="translate(440, 130)">
+    <rect width="360" height="510" rx="14" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1.5">LAYER 02 · FUSION &amp; REASONING</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Adaptive Safety Engine</text>
+
+    <!-- Sub-block: Spatial-Temporal Association -->
+    <g transform="translate(20, 95)">
+      <rect width="320" height="90" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="20" y="32" fill="#ffffff" font-size="15" font-weight="600">Multi-Modal Fusion Filter</text>
+      <text x="20" y="54" fill="#888ea8" font-size="12">Extended Kalman Filter (EKF) tracking</text>
+      <text x="20" y="74" fill="#888ea8" font-size="12">Confidence-weighted LiDAR + Doppler state</text>
+    </g>
+
+    <!-- Sub-block: Time-to-Collision (TTC) Decision Matrix -->
+    <g transform="translate(20, 205)">
+      <rect width="320" height="180" rx="10" fill="#181a26" stroke="rgba(226,40,29,0.3)" />
+      <text x="20" y="30" fill="#ff6b61" font-size="14" font-weight="700">TTC Calibrated Decision Bands</text>
+      
+      <!-- Band 1 -->
+      <rect x="20" y="45" width="280" height="34" rx="6" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1" />
+      <text x="32" y="67" fill="#fca5a5" font-size="12" font-weight="700">CRITICAL: TTC ≤ 1.5s</text>
+      <text x="180" y="67" fill="#fca5a5" font-size="11">Emergency Active Brake</text>
+
+      <!-- Band 2 -->
+      <rect x="20" y="88" width="280" height="34" rx="6" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="1" />
+      <text x="32" y="110" fill="#fcd34d" font-size="12" font-weight="700">WARNING: TTC ≤ 3.0s</text>
+      <text x="180" y="110" fill="#fcd34d" font-size="11">Haptic Alert + Retarder</text>
+
+      <!-- Band 3 -->
+      <rect x="20" y="131" width="280" height="34" rx="6" fill="rgba(59,130,246,0.2)" stroke="#3b82f6" stroke-width="1" />
+      <text x="32" y="153" fill="#93c5fd" font-size="12" font-weight="700">ADVISORY: TTC ≤ 5.0s</text>
+      <text x="180" y="153" fill="#93c5fd" font-size="11">HUD Visual Cue</text>
+    </g>
+
+    <!-- Sub-block: HCV Dynamics Compensation -->
+    <g transform="translate(20, 405)">
+      <rect width="320" height="75" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="20" y="28" fill="#a3e635" font-size="13" font-weight="600">Heavy Vehicle Dynamics Physics</text>
+      <text x="20" y="48" fill="#888ea8" font-size="12">Air-brake lag compensation (350ms delay)</text>
+      <text x="20" y="64" fill="#888ea8" font-size="12">Gross vehicle weight &amp; grade slope adaptation</text>
+    </g>
+  </g>
+
+  <!-- Connectors from Middle to Right -->
+  <path d="M 800 380 L 870 380" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4" />
+  <polygon points="870,375 880,380 870,385" fill="#38bdf8" />
+
+  <!-- Right Column: Validation &amp; Digital Twin Simulation -->
+  <g transform="translate(880, 130)">
+    <rect width="280" height="510" rx="14" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.07)" />
+    <text x="24" y="40" fill="#a3e635" font-size="12" font-weight="700" letter-spacing="1.5">LAYER 03 · SIMULATION</text>
+    <text x="24" y="68" fill="#ffffff" font-size="18" font-weight="600">Digital Twin Validation</text>
+
+    <g transform="translate(20, 95)">
+      <rect width="240" height="115" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">RoadRunner Studio</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">India road geometry creation</text>
+      <text x="16" y="70" fill="#888ea8" font-size="12">Irregular lane widths, potholes</text>
+      <text x="16" y="94" fill="#38bdf8" font-size="11" font-family="monospace">OpenDRIVE (.xodr) Export</text>
+    </g>
+
+    <g transform="translate(20, 230)">
+      <rect width="240" height="125" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">CARLA UE5 Co-Sim</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">Heterogeneous traffic actors</text>
+      <text x="16" y="70" fill="#888ea8" font-size="12">Pedestrians, stray livestock</text>
+      <text x="16" y="94" fill="#a3e635" font-size="11" font-family="monospace">Python API Sync Step @ 50Hz</text>
+    </g>
+
+    <g transform="translate(20, 375)">
+      <rect width="240" height="105" rx="10" fill="#181a26" stroke="rgba(255,255,255,0.06)" />
+      <text x="16" y="28" fill="#ffffff" font-size="14" font-weight="600">Closed-Loop Actuation</text>
+      <text x="16" y="50" fill="#888ea8" font-size="12">CAN bus message injection</text>
+      <text x="16" y="72" fill="#888ea8" font-size="12">Brake ECU deceleration ramp</text>
+      <text x="16" y="92" fill="#ff6b61" font-size="11" font-family="monospace">Zero-Collision Verified</text>
+    </g>
+  </g>
+</svg>

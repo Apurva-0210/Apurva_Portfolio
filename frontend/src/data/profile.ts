@@ -53,11 +53,11 @@ export const profile = {
   specialization: "AI & ML Specialization",
   university: "MIT World Peace University",
   graduation: "June 2027",
-  cgpa: "8.58",
+  cgpa: "8.62",
   location: "Pune, Maharashtra, India",
   email: "apurvak916@gmail.com",
   githubUsername: "Apurva-0210",
-  portfolioUrl: "https://apurva-0210.github.io",
+  portfolioUrl: "https://apurvakumar55.vercel.app",
   links: {
     linkedin: "https://linkedin.com/in/apurvakumar55",
     github: "https://github.com/Apurva-0210",
