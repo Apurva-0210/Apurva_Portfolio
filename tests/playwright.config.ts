@@ -12,8 +12,7 @@ export default defineConfig({
     ['json', { outputFile: './test-results/results.json' }],
   ],
   use: {
-    // farm-ts: localhost — Vite proxies /api to FastAPI; the external preview host is not in-pod routable.
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:4173',
     screenshot: 'on',
     trace: 'on-first-retry',
     headless: true,
