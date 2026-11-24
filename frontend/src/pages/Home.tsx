@@ -200,22 +200,6 @@ const works: Work[] = [
       "Unified Connected Mobility Cloud Architecture",
     ],
   },
-  {
-    id: "work-other",
-    title: "Other Notable Work: ML-KEM FPGA, SHRIMP Agri IoT & Embedded 8051",
-    category: "Hardware & Architecture",
-    tags: ["ML-KEM (FPGA)", "SHRIMP Agri IoT", "8051 Real-Time"],
-    href: "https://github.com/Apurva-0210",
-    img: withBase("assets/projects/cards/card_other_work.png"),
-    summary:
-      "Specialized hardware and IoT systems: FPGA implementation of NIST Post-Quantum Cryptography (ML-KEM), AI-driven smart aquaculture monitoring (SHRIMP Agri), local desktop AI assistant (AEGIS), and assembly-level 8051 microcontrollers.",
-    specs: [
-      "Hardware Acceleration & Verification of ML-KEM (PQC)",
-      "IoT Multiparameter Water Quality Sensor Arrays for Aquaculture",
-      "Bare-Metal Assembly & C Interfacing on 8051 Microcontrollers",
-      "Closed-Loop Real-Time Peripheral Control",
-    ],
-  },
 ];
 
 const quotes: Quote[] = [
