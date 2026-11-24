@@ -6,7 +6,7 @@ describe("Profile & Data Integrity", () => {
   it("has valid personal information", () => {
     expect(profile.name).toBe("Apurva Kumar");
     expect(profile.email).toBe("apurvak916@gmail.com");
-    expect(profile.cgpa).toBe("8.62");
+    expect(profile.cgpa).toBe("8.58");
     expect(profile.links.github).toContain("github.com/Apurva-0210");
   });
 

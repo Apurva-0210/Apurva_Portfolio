@@ -8,10 +8,9 @@ import {
   wordLevel,
   loopOffset,
   countAt,
-  journeyFrame,
-  featuredFrame,
 } from "@/lib/motion-utils"
 import { fetchGithubPortfolio, type GithubPortfolioData } from "@/lib/github"
+import { withBase } from "@/data/profile"
 
 const ASSETS = "https://kedhar-components.pages.dev/crimson-reach-template/"
 
@@ -28,7 +27,7 @@ export type Work = {
 export type Quote = { id: string; name: string; role: string; quote: string; img?: string }
 export type Service = { id: string; title: string; items: string[]; img?: string }
 export type Journey = { tone: "silver" | "red" | "dark"; title: string; body: string }
-export type Stat = { n: number; label: string; body: string }
+export type Stat = { n: number; label: string; body: string; displayValue?: string }
 
 const SERVICES: Service[] = [
   { id: "svc-brand", title: "Embedded Systems\n& Firmware", items: ["Bare-metal C & C++ development", "STM32 & ESP32 Microcontrollers", "UART, SPI, I2C & CAN communication", "FreeRTOS task scheduling", "Hardware-in-the-loop verification"] },
@@ -46,21 +45,23 @@ const WORKS: Work[] = [
 ]
 
 const QUOTES: Quote[] = [
-  { id: "client-1", name: "Tata Technologies", role: "Embedded Systems Intern · Automotive ECU Software", quote: "“Contributed to embedded software development and firmware testing for automotive electronic control modules, assisting with hardware-in-the-loop validation.”" },
-  { id: "client-2", name: "IIT Guwahati", role: "Research Intern · Computer Architecture & Systems Lab", quote: "“Instrumented cache statistics and evaluated memory hierarchy bottlenecks using gem5 and SPEC CPU2017 benchmarks. Implemented and validated NoC routing algorithms.”" },
-  { id: "client-3", name: "MIT World Peace University", role: "B.Tech ECE (AI & ML) · CGPA 8.62", quote: "“Research spanning attention-augmented highway speed governance and noise-conditioned residual learning for robust Massive MIMO channel estimation.”" },
+  { id: "client-1", name: "Tata Technologies", role: "Embedded Systems Intern · InnoVent", quote: "“Hands-on firmware development and verification for automotive electronic control modules under hardware-in-the-loop environments.”" },
+  { id: "client-2", name: "IIT Guwahati", role: "Research Intern · Computer Architecture Lab", quote: "“Characterized memory hierarchies and Network-on-Chip flit latency using gem5 and SPEC CPU2017 benchmarks.”" },
+  { id: "client-3", name: "MIT World Peace University", role: "B.Tech ECE (AI & ML) · CGPA 8.58", quote: "“Research spanning attention-augmented highway speed governance and noise-conditioned residual learning for robust Massive MIMO channel estimation.”" },
+  { id: "client-4", name: "iACE Gujarat", role: "Automotive Systems Trainee", quote: "“Intensive training in automotive ECU architecture, CAN bus protocol diagnostics, and electric vehicle powertrain integration.”" },
 ]
 
 const JOURNEY: Journey[] = [
-  { tone: "silver", title: "Embedded &\nReal-Time", body: "Bare-metal C, RTOS, and driver development across STM32 and ESP32. Interfacing sensors, actuators, and communication buses close to the hardware." },
-  { tone: "red", title: "Computer\nArchitecture", body: "Evaluating memory bottlenecks, cache hierarchy latency, and Network-on-Chip routing topologies using cycle-accurate gem5 simulation." },
-  { tone: "dark", title: "Automotive &\nIntelligent ADAS", body: "Perception, multi-modal sensor fusion (LiDAR/Radar/Vision), and time-to-collision safety governance for complex vehicle dynamics in CARLA." },
+  { tone: "red", title: "Automotive Systems\n& ADAS", body: "Calibrating safety-critical ADAS perception, multi-modal sensor fusion (LiDAR, Radar, Cameras), and real-time TTC braking decision logic under high-density Indian traffic in CARLA UE5 and RoadRunner." },
+  { tone: "silver", title: "Embedded &\nReal-Time Systems", body: "Bare-metal C & C++, FreeRTOS task scheduling, and device drivers across STM32 and ESP32 microcontrollers. Interfacing CAN Bus (ISO 15765-4), UART, SPI, and sensor data acquisition close to silicon." },
+  { tone: "dark", title: "Computer\nArchitecture", body: "Cycle-accurate microarchitecture simulation with gem5 v25.1.0.1. Characterizing Ruby MESI_Two_Level cache coherence, Garnet 4x4 2D Mesh NoC flit latency, and SPEC CPU2017 workload bottlenecks." },
+  { tone: "silver", title: "Applied AI/ML\n& Deep Learning", body: "Noise-Conditioned Residual Transformers (NCRT/NCRN) for Massive MIMO CSI channel estimation, YOLOv8-CBAM attention models for traffic sign detection, and fuzzy logic control engines." },
 ]
 
 const STATS: Stat[] = [
-  { n: 9, label: "8.62 Academic CGPA", body: "Electronics & Communication Engineering (AI & ML Specialization) at MIT World Peace University, Pune." },
-  { n: 3, label: "Internships & Research", body: "Industry and academic research at Tata Technologies, IIT Guwahati, and the International Automobile Centre of Excellence (iACE)." },
-  { n: 6, label: "Core Systems Projects", body: "Spanning vehicle ADAS simulation, attention edge neural networks, multi-gas composite sensors, and gem5 microarchitecture." },
+  { n: 9, displayValue: "8.58", label: "8.58 Academic CGPA", body: "Electronics & Communication Engineering (AI & ML Specialization) at MIT World Peace University, Pune." },
+  { n: 12, displayValue: "12+", label: "Engineering Projects", body: "Spanning vehicle ADAS simulation, attention edge neural networks, multi-gas composite sensors, and gem5 microarchitecture." },
+  { n: 4, displayValue: "4+", label: "Research & Industry Labs", body: "Industry and academic research at Tata Technologies, IIT Guwahati, iACE Gujarat, and MIT-WPU." },
 ]
 
 const MANIFESTO =
@@ -75,6 +76,7 @@ export interface CrimsonReachTemplateProps {
   name?: string
   role?: string
   avatar?: string
+  logoImg?: string
   year?: string
   location?: string
   heroLine1?: string
@@ -99,6 +101,7 @@ export interface CrimsonReachTemplateProps {
   stats?: Stat[]
   ctaHead?: string
   ctaTitle?: string
+  ctaImg?: string
   resumeUrl?: string
   linkedinUrl?: string
   githubUrl?: string
@@ -140,51 +143,53 @@ function Icon({ kind }: { kind: "silver" | "red" | "dark" }) {
   if (kind === "red") {
     return (
       <svg className="cr-jicon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="7" y="7" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M12 12 h8 v8 h-8 Z" fill="currentColor" opacity="0.3" />
+        <rect x="6" y="6" width="20" height="20" rx="4" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="16" cy="16" r="4" fill="currentColor" />
       </svg>
     )
   }
   return (
     <svg className="cr-jicon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <polygon points="16,5 27,24 5,24" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="16" cy="17" r="3" fill="currentColor" />
+      <path d="M16 4 L28 26 H4 Z" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="18" r="3" fill="currentColor" />
     </svg>
   )
 }
 
 export default function CrimsonReachTemplate({
-  height = "90vh",
+  height = "100vh",
   email = "apurvak916@gmail.com",
-  brand = "Apurva.",
+  brand = "Apurva Kumar",
   name = "Apurva Kumar",
   role = "Embedded Systems · Automotive Electronics · Simulation · AI/ML",
   avatar,
+  logoImg,
   year = "2026",
   location = "Pune · India",
-  heroLine1 = "Where low-level code",
-  heroLine2 = "meets physical motion",
-  heroSub = "that’s where I engineer systems.",
+  heroLine1 = "Building Intelligent",
+  heroLine2 = "Systems at the Edge",
+  heroSub = "Embedded Systems · Automotive Electronics · Simulation · Applied AI/ML",
   manifesto = MANIFESTO,
-  trustBadgeText = "Tata Tech · IIT Guwahati · MIT-WPU",
+  trustBadgeText = "Tata Technologies · IIT Guwahati · MIT-WPU",
   marqueeList = [
-    "Embedded C / C++",
+    "Embedded C & C++",
     "STM32 & ESP32",
-    "gem5 Simulator",
-    "Network-on-Chip",
-    "CARLA ADAS",
-    "PyTorch & Vision",
-    "CAN Bus & OBD-II",
-    "SPEC CPU2017",
+    "gem5 Architecture",
+    "Garnet NoC",
+    "CARLA & RoadRunner",
+    "Automotive ADAS",
+    "CAN Bus (ISO 15765-4)",
+    "PyTorch & YOLOv8",
+    "Massive MIMO (NCRT)",
     "FreeRTOS",
   ],
-  journeyTitle = "Core Engineering Domains",
+  journeyTitle = "Core Engineering Disciplines",
   journey = JOURNEY,
   servicesTitle = "Engineering Capabilities",
-  servicesSub = "Deep technical execution across register-level hardware, simulators, and neural perception",
+  servicesSub = "Deep technical execution across register-level hardware, cycle-accurate simulators, and neural perception",
   services = SERVICES,
-  worksTitle = "Featured Work",
-  worksSub = "Systems, architecture, and research projects with public repositories",
+  worksTitle = "Featured Engineering Work",
+  worksSub = "Systems, architecture, and research projects with public repositories and technical documentation",
   works = WORKS,
   wallTitle = "Academic & Industry Affiliations",
   wallLogos = [
@@ -201,8 +206,9 @@ export default function CrimsonReachTemplate({
   quotesSub = "Real outcomes from industry internships and computer architecture research",
   quotes = QUOTES,
   stats = STATS,
-  ctaHead = "That’s my engineering track record",
-  ctaTitle = "Let’s build something reliable",
+  ctaHead = "Building intelligent systems at the edge",
+  ctaTitle = "Let’s engineer something reliable",
+  ctaImg,
   resumeUrl = "/assets/Apurva_Kumar_Resume.pdf",
   linkedinUrl = "https://linkedin.com/in/apurvakumar55",
   githubUrl = "https://github.com/Apurva-0210",
@@ -219,7 +225,6 @@ export default function CrimsonReachTemplate({
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [categoryFilter, setCategoryFilter] = React.useState("All")
   const [selectedWork, setSelectedWork] = React.useState<Work | null>(null)
-  const [githubData, setGithubData] = React.useState<GithubPortfolioData | null>(null)
 
   const img = (id: string) => (id.startsWith("http") || id.startsWith("/") ? id : assetBase + id + ".webp")
   const words = React.useMemo(() => manifesto.split(" "), [manifesto])
@@ -243,97 +248,66 @@ export default function CrimsonReachTemplate({
     setWork(0)
   }, [categoryFilter])
 
-  // live clock in IST
+  // ESC key to close modal
   React.useEffect(() => {
-    const f = () => {
-      try {
-        setClock(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" }))
-      } catch {
-        setClock("")
-      }
-    }
-    f()
-    const t = window.setInterval(f, 15000)
-    return () => window.clearInterval(t)
-  }, [])
-
-  // Live GitHub telemetry
-  React.useEffect(() => {
-    let active = true
-    fetchGithubPortfolio()
-      .then((data) => {
-        if (active) setGithubData(data)
-      })
-      .catch(() => {
-        /* Gracefully use static profile data if API rate-limited */
-      })
-    return () => {
-      active = false
-    }
-  }, [])
-
-  // testimonials autoplay
-  React.useEffect(() => {
-    const t = window.setInterval(() => {
-      setQuote((q) => (q + 1) % quotes.length)
-    }, 6000)
-    return () => window.clearInterval(t)
-  }, [quotes.length])
-
-  // Keyboard navigation for Modal
-  React.useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelectedWork(null)
         setMenuOpen(false)
       }
     }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
 
-  // scroll choreography
+  React.useEffect(() => {
+    const fmt = () => {
+      const d = new Date()
+      const utc = d.getTime() + d.getTimezoneOffset() * 60000
+      const ist = new Date(utc + 5.5 * 3600000)
+      setClock(
+        ist.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      )
+    }
+    fmt()
+    const id = setInterval(fmt, 1000 * 30)
+    return () => clearInterval(id)
+  }, [])
+
+  // Auto carousel advance for quotes
+  React.useEffect(() => {
+    if (!quotes.length) return
+    const id = setInterval(() => {
+      setQuote((prev) => (prev + 1) % quotes.length)
+    }, 8000)
+    return () => clearInterval(id)
+  }, [quotes.length])
+
   React.useEffect(() => {
     const root = rootRef.current
     if (!root) return
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const $ = (s: string) => root.querySelector(s) as HTMLElement | null
-    const $$ = (s: string) => Array.from(root.querySelectorAll(s)) as HTMLElement[]
-    const nav = $(".cr-nav"),
-      hero = $(".cr-hero"),
-      hands = $$(".cr-hand"),
+    const $ = (sel: string) => root.querySelector(sel) as HTMLElement | null
+    const $$ = (sel: string) => Array.from(root.querySelectorAll(sel)) as HTMLElement[]
+
+    const hero = $(".cr-hero"),
+      hands = [$(".cr-hand-top"), $(".cr-hand-bottom")],
       manifestoEl = $(".cr-manifesto"),
       wordEls = $$(".cr-word"),
-      journeyEl = $(".cr-journey"),
-      jtitle = $(".cr-jtitle"),
-      panels = $$(".cr-panel"),
-      fronts = $$(".cr-front"),
-      flips = $$(".cr-flip"),
-      feat = $(".cr-feat"),
-      fstage = $(".cr-fstage"),
-      ftitle = $(".cr-ftitle"),
-      fsub = $(".cr-fsub"),
-      fcar = $(".cr-fcar"),
       contacts = $(".cr-contact"),
       cta = $(".cr-cta"),
-      ctaImg = $(".cr-cta-img"),
+      ctaImgEl = $(".cr-cta-img"),
       ctaText = $(".cr-cta-text")
 
     let raf = 0
     const tick = () => {
       raf = 0
       const winH = window.innerHeight
-      const winW = window.innerWidth
-
-      // nav pill state
-      if (nav && hero) {
-        const heroBottom = hero.getBoundingClientRect().bottom
-        if (heroBottom <= 60) {
-          nav.classList.add("cr-pill")
-        } else {
-          nav.classList.remove("cr-pill")
-        }
-      }
 
       // hero parallax
       if (hero && !reduced) {
@@ -358,46 +332,7 @@ export default function CrimsonReachTemplate({
         })
       }
 
-      // journey card flip + spread
-      if (journeyEl && panels.length) {
-        const r = journeyEl.getBoundingClientRect()
-        const total = r.height - winH
-        const p = clamp(-r.top / (total || 1), 0, 1)
-        const { F, H0, panels: P, titleO } = journeyFrame(p, winW, winH, reduced)
-        if (jtitle) jtitle.style.opacity = String(titleO)
-        panels.forEach((panel, i) => {
-          const q = P[i]
-          panel.style.width = q.w + "px"
-          panel.style.height = q.h + "px"
-          panel.style.transform = "translate3d(" + (q.x - q.w / 2) + "px," + (q.y - q.h / 2) + "px,0) rotateZ(" + q.rz + "deg)"
-          const flip = flips[i]
-          if (flip) flip.style.transform = "rotateY(" + q.ry + "deg)"
-          const front = fronts[i]
-          if (front) {
-            front.style.backgroundSize = F + "px " + H0 + "px"
-            front.style.backgroundPosition = q.bgX + "px center"
-          }
-        })
-      }
-
-      // featured work entry
-      if (feat && fstage) {
-        const r = feat.getBoundingClientRect()
-        const total = r.height - winH
-        const p = clamp(-r.top / (total || 1), 0, 1)
-        const big = Math.min(2.8, Math.max(1.8, winW / 460))
-        const { scale, lift, carY, carO, subO } = featuredFrame(p, big, reduced)
-        if (ftitle) {
-          ftitle.style.transform = "scale(" + scale + ") translateY(" + -lift * 20 + "px)"
-        }
-        if (fsub) fsub.style.opacity = String(subO)
-        if (fcar) {
-          fcar.style.transform = "translateY(" + carY * 80 + "px)"
-          fcar.style.opacity = String(carO)
-        }
-      }
-
-      // stats counters
+      // stats counters (only for items without custom displayValue)
       if (contacts) {
         const r = contacts.getBoundingClientRect()
         if (r.top < winH * 0.85 && r.bottom > 0) {
@@ -407,13 +342,13 @@ export default function CrimsonReachTemplate({
       }
 
       // closing CTA reveal
-      if (cta && ctaImg && ctaText && !reduced) {
+      if (cta && ctaImgEl && ctaText && !reduced) {
         const r = cta.getBoundingClientRect()
         const p = clamp((winH - r.top) / (winH * 0.8), 0, 1)
-        cta.style.transform = "scale(" + mix(0.9, 1, p) + ")"
-        cta.style.borderRadius = mix(40, 16, p) + "px"
-        ctaImg.style.transform = "scale(" + mix(1.18, 1, p) + ")"
-        ctaText.style.filter = "blur(" + mix(14, 0, seg(p, 0.35, 1)) + "px)"
+        cta.style.transform = "scale(" + mix(0.94, 1, p) + ")"
+        cta.style.borderRadius = mix(32, 16, p) + "px"
+        ctaImgEl.style.transform = "scale(" + mix(1.12, 1, p) + ")"
+        ctaText.style.filter = "blur(" + mix(10, 0, seg(p, 0.35, 1)) + "px)"
         ctaText.style.opacity = String(mix(0, 1, seg(p, 0.3, 0.9)))
       }
     }
@@ -440,30 +375,34 @@ export default function CrimsonReachTemplate({
   const copy = () => {
     try {
       navigator.clipboard?.writeText(email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch {
       /* clipboard fallback */
     }
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1600)
   }
 
   const nW = filteredWorks.length || 1
-  const nQ = quotes.length
 
   return (
     <div ref={rootRef} className={"cr-root" + (className ? " " + className : "")} style={style}>
       <style>{CSS}</style>
 
-      {/* Floating Navigation Bar */}
+      {/* Floating Navigation Bar - Shielded with solid backdrop */}
       <div className="cr-navwrap">
         <nav className="cr-nav" aria-label="Main Navigation">
           <a className="cr-logo" href="#top" onClick={go(".cr-hero")}>
-            {brand}
+            {logoImg ? (
+              <img src={logoImg} alt="" className="cr-nav-logo-img" width={28} height={28} />
+            ) : (
+              <span className="cr-bdot" />
+            )}
+            <span>{brand}</span>
           </a>
 
           <div className="cr-links">
             <a href="#focus" onClick={go(".cr-journey")}>
-              <Roll>Focus</Roll>
+              <Roll>Disciplines</Roll>
             </a>
             <a href="#capabilities" onClick={go(".cr-services")}>
               <Roll>Capabilities</Roll>
@@ -480,20 +419,6 @@ export default function CrimsonReachTemplate({
           </div>
 
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            {/* Live GitHub Telemetry pill */}
-            {githubData && (
-              <a
-                href={githubData.profile.html_url}
-                target="_blank"
-                rel="noreferrer"
-                className="cr-git-pill"
-                title={`${githubData.profile.public_repos} public repos on GitHub`}
-              >
-                <span className="cr-git-dot" />
-                <span>GitHub Verified ({githubData.profile.public_repos})</span>
-              </a>
-            )}
-
             {resumeUrl && (
               <a
                 className="cr-btn"
@@ -504,7 +429,7 @@ export default function CrimsonReachTemplate({
                 <Roll>Resume ↓</Roll>
               </a>
             )}
-            <a className="cr-btn" href={"mailto:" + email}>
+            <a className="cr-btn" href={"mailto:" + email} style={{ background: "var(--red)", color: "#fff" }}>
               <Roll>Get In Touch</Roll>
             </a>
 
@@ -536,7 +461,7 @@ export default function CrimsonReachTemplate({
           </button>
           <div className="cr-mob-links">
             <a href="#focus" onClick={go(".cr-journey")}>
-              Focus Architecture
+              Core Disciplines
             </a>
             <a href="#capabilities" onClick={go(".cr-services")}>
               Engineering Capabilities
@@ -551,7 +476,7 @@ export default function CrimsonReachTemplate({
               Affiliations & Labs
             </a>
             <a href="#contact" onClick={go(".cr-contact")}>
-              Metrics & Contact
+              Direct Connect & Metrics
             </a>
           </div>
 
@@ -661,61 +586,48 @@ export default function CrimsonReachTemplate({
         </div>
       </section>
 
-      {/* journey / focus architecture */}
+      {/* Core Engineering Disciplines - 4 Pillars */}
       <section className="cr-journey cr-dots" id="focus">
         <div className="cr-jstage">
-          <h2 className="cr-h2 cr-jtitle">
-            {journeyTitle.includes(".") ? (
-              <>
-                <em>{journeyTitle.split(".")[0]}.</em> {journeyTitle.split(".").slice(1).join(".")}
-              </>
-            ) : (
-              journeyTitle
-            )}
-          </h2>
-          <div className="cr-jcards">
+          <div className="cr-jhead">
+            <h2 className="cr-h2 cr-jtitle">
+              <em>Core Engineering</em> Disciplines
+            </h2>
+            <p className="cr-jsub">
+              Cross-disciplinary execution spanning automotive ADAS, bare-metal embedded firmware, cycle-accurate computer architecture, and applied deep learning
+            </p>
+          </div>
+          <div className="cr-jgrid">
             {journey.map((c, i) => (
-              <div key={i} className="cr-panel">
-                <div className="cr-flip">
-                  <div className="cr-face cr-front" style={{ backgroundImage: "url(" + img("dune") + ")" }} />
-                  <div className={"cr-face cr-back cr-tone-" + c.tone}>
-                    <div className="cr-back-in">
-                      <Icon kind={c.tone} />
-                      <h3 style={{ whiteSpace: "pre-line" }}>{c.title}</h3>
-                      <p>{c.body}</p>
-                    </div>
-                  </div>
+              <div key={i} className={"cr-jcard cr-jcard-" + c.tone}>
+                <div className="cr-jcard-top">
+                  <span className="cr-jidx">0{i + 1}</span>
+                  <Icon kind={c.tone} />
                 </div>
+                <h3 className="cr-jcard-title">{c.title.replace("\n", " ")}</h3>
+                <p className="cr-jcard-body">{c.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* services / capabilities */}
+      {/* capabilities / services */}
       <section className="cr-services" id="capabilities">
-        <header className="cr-head">
-          <h2 className="cr-h2 cr-h2-lg">
-            {servicesTitle.includes(" ") ? (
-              <>
-                <em>{servicesTitle.split(" ")[0]}</em> {servicesTitle.split(" ").slice(1).join(" ")}
-              </>
-            ) : (
-              servicesTitle
-            )}
-          </h2>
+        <div className="cr-head">
+          <h2 className="cr-h2 cr-h2-lg">{servicesTitle}</h2>
           <p>{servicesSub}</p>
-        </header>
+        </div>
         <div className="cr-rows">
           {services.map((s, i) => (
             <article key={s.id} className="cr-row">
               <div className="cr-row-title">
-                <span>({String(i + 1).padStart(2, "0")})</span>
-                <h3 style={{ whiteSpace: "pre-line" }}>{s.title}</h3>
+                <span>0{i + 1}</span>
+                <h3>{s.title}</h3>
               </div>
               <ul>
-                {s.items.map((t) => (
-                  <li key={t}>{t}</li>
+                {s.items.map((it, idx) => (
+                  <li key={idx}>— {it}</li>
                 ))}
               </ul>
               <div className="cr-row-img">
@@ -770,97 +682,95 @@ export default function CrimsonReachTemplate({
                   <article
                     key={w.id}
                     className="cr-work"
-                    data-d={Math.abs(d) > 1 ? "far" : d === 0 ? "c" : "s"}
+                    data-d={d === 0 ? "c" : Math.abs(d) === 1 ? "s" : "far"}
                     style={{ "--d": d } as React.CSSProperties}
-                    onClick={() => {
-                      if (d !== 0) {
-                        setWork((((work + d) % nW) + nW) % nW)
-                      } else {
-                        setSelectedWork(w)
-                      }
-                    }}
+                    onClick={() => setWork(i)}
                   >
                     <div className="cr-work-img">
                       <img
                         src={w.img || img(w.id)}
                         alt={w.title}
                         loading={isAdjacentOrActive ? "eager" : "lazy"}
-                        width={762}
-                        height={506}
+                        decoding="async"
+                        width={600}
+                        height={400}
                       />
                     </div>
-                    <h3>
-                      {w.href ? (
-                        <a
-                          href={w.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={{ color: "inherit", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}
-                        >
-                          {w.title} <span style={{ opacity: 0.6, fontSize: "0.85em" }}>↗</span>
-                        </a>
-                      ) : (
-                        w.title
-                      )}
-                    </h3>
+                    {w.category && <span className="cr-modal-tag">{w.category}</span>}
+                    <h3>{w.title}</h3>
                     <div className="cr-tags">
-                      {w.tags.map((t) => (
-                        <span key={t}>{t}</span>
+                      {w.tags.map((t, tidx) => (
+                        <span key={tidx}>{t}</span>
                       ))}
                     </div>
-                    {/* Deep-dive interactive trigger */}
-                    <button
-                      className="cr-inspect-btn"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedWork(w)
-                      }}
-                    >
-                      <span>Inspect Architecture &amp; Specs</span>
-                      <span>→</span>
-                    </button>
+                    {d === 0 && (
+                      <div style={{ marginTop: "12px", display: "flex", gap: "10px", alignItems: "center" }}>
+                        <button
+                          type="button"
+                          className="cr-inspect-btn"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedWork(w)
+                          }}
+                          aria-label={`Inspect Architecture: ${w.title} specifications`}
+                        >
+                          <span>Inspect Architecture ↗</span>
+                        </button>
+                        {w.href && (
+                          <a
+                            href={w.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="cr-source-btn"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ opacity: 0.8 }}
+                          >
+                            <span>Source Repo ↗</span>
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </article>
                 )
               })}
-              <button
-                className="cr-arrow cr-prev"
-                aria-label="Previous project"
-                onClick={() => setWork((work - 1 + nW) % nW)}
-              >
-                ←
-              </button>
-              <button
-                className="cr-arrow cr-next"
-                aria-label="Next project"
-                onClick={() => setWork((work + 1) % nW)}
-              >
-                →
-              </button>
             </div>
+            <button
+              className="cr-arrow cr-prev"
+              onClick={() => setWork((w) => (w - 1 + nW) % nW)}
+              aria-label="Previous project"
+            >
+              ←
+            </button>
+            <button
+              className="cr-arrow cr-next"
+              onClick={() => setWork((w) => (w + 1) % nW)}
+              aria-label="Next project"
+            >
+              →
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Interactive Project Deep-Dive Modal */}
+      {/* Technical Deep-Dive Modal */}
       {selectedWork && (
         <div
           className="cr-modal-backdrop"
           onClick={() => setSelectedWork(null)}
           role="dialog"
           aria-modal="true"
-          aria-label={selectedWork.title}
+          aria-labelledby="modal-title"
         >
           <div className="cr-modal" onClick={(e) => e.stopPropagation()}>
             <button
               className="cr-modal-close"
               onClick={() => setSelectedWork(null)}
-              aria-label="Close dialog"
+              aria-label="Close modal dialog"
             >
               ✕
             </button>
             {selectedWork.category && <span className="cr-modal-tag">{selectedWork.category}</span>}
-            <h3>{selectedWork.title}</h3>
+            <h3 id="modal-title">{selectedWork.title}</h3>
             {selectedWork.img && (
               <div className="cr-modal-img">
                 <img src={selectedWork.img} alt={selectedWork.title} />
@@ -869,15 +779,15 @@ export default function CrimsonReachTemplate({
             {selectedWork.summary && <p className="cr-modal-desc">{selectedWork.summary}</p>}
             {selectedWork.specs && selectedWork.specs.length > 0 && (
               <div className="cr-modal-specs">
-                <h4>System Architecture &amp; Technical Specifications</h4>
+                <h4>System Architecture & Key Specifications</h4>
                 <ul>
-                  {selectedWork.specs.map((spec, si) => (
-                    <li key={si}>{spec}</li>
+                  {selectedWork.specs.map((spec, sidx) => (
+                    <li key={sidx}>{spec}</li>
                   ))}
                 </ul>
               </div>
             )}
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
               {selectedWork.href && (
                 <a
                   className="cr-btn"
@@ -886,71 +796,66 @@ export default function CrimsonReachTemplate({
                   rel="noreferrer"
                   style={{ background: "var(--red)", color: "#fff" }}
                 >
-                  <Roll>View Source Repository on GitHub ↗</Roll>
+                  <Roll>Open GitHub Repository ↗</Roll>
                 </a>
               )}
               <button
+                type="button"
                 className="cr-btn"
                 onClick={() => setSelectedWork(null)}
-                style={{ background: "rgba(255,255,255,0.08)", color: "var(--ink)", border: "1px solid rgba(255,255,255,0.15)" }}
+                style={{ background: "rgba(255,255,255,.08)", color: "var(--ink)" }}
               >
-                Close Specification
+                Close
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* wall / affiliations */}
+      {/* affiliations wall */}
       <section className="cr-wall" id="affiliations">
-        <h2 className="cr-wall-head">
-          <em>{wallTitle.split(" ")[0]}</em> {wallTitle.split(" ").slice(1).join(" ")}
-        </h2>
+        <h2 className="cr-wall-head">{wallTitle}</h2>
         <div className="cr-grid">
-          {wallLogos.map((l) => (
-            <div key={l} className="cr-tile">
-              <span>{l}</span>
+          {wallLogos.map((brandName, i) => (
+            <div key={i} className="cr-tile">
+              <span>{brandName}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* testimonials / field notes */}
+      {/* field experience / quotes */}
       <section className="cr-quotes" id="experience">
-        {/* Dynamic section header */}
-        <div style={{ textAlign: "center", marginBottom: "36px" }}>
-          <h2 className="cr-h2">
-            {quotesTitle.includes(" ") ? (
-              <>
-                <em>{quotesTitle.split(" ")[0]}</em> {quotesTitle.split(" ").slice(1).join(" ")}
-              </>
-            ) : (
-              quotesTitle
-            )}
-          </h2>
-          {quotesSub && <p style={{ color: "var(--mute)", marginTop: "8px", fontSize: "15px" }}>{quotesSub}</p>}
+        <div className="cr-head" style={{ marginBottom: "32px" }}>
+          <h2 className="cr-h2">{quotesTitle}</h2>
+          <p>{quotesSub}</p>
         </div>
-
         <div className="cr-qstage">
-          {quotes.map((q, i) => {
-            const d = loopOffset(i, quote, nQ)
-            return (
-              <figure key={q.id} className="cr-quote" data-c={d === 0 ? "" : undefined} style={{ "--d": d } as React.CSSProperties} aria-hidden={d !== 0}>
-                <img src={q.img || img(q.id)} alt={q.name} loading="lazy" width={623} height={623} />
-                <div className="cr-qbody">
-                  <blockquote>{q.quote}</blockquote>
-                  <figcaption>
-                    <strong>{q.name}</strong>
-                    <span>{q.role}</span>
-                  </figcaption>
-                </div>
-              </figure>
-            )
-          })}
-          <button className="cr-arrow cr-qprev" aria-label="Previous quote" onClick={() => setQuote((quote - 1 + nQ) % nQ)}>
+          {quotes.map((q, i) => (
+            <figure
+              key={q.id}
+              className="cr-quote"
+              style={{
+                opacity: i === quote ? 1 : 0,
+                transform: i === quote ? "translateY(0)" : "translateY(16px)",
+                pointerEvents: i === quote ? "auto" : "none",
+                transition: "opacity .6s, transform .6s",
+              }}
+            >
+              {q.img && <img src={q.img} alt={q.name + " badge"} loading="lazy" width={112} height={112} />}
+              <div className="cr-qbody">
+                <blockquote>{q.quote}</blockquote>
+                <figcaption>
+                  <strong>{q.name}</strong>
+                  <span>{q.role}</span>
+                </figcaption>
+              </div>
+            </figure>
+          ))}
+          <button className="cr-arrow cr-qprev" onClick={() => setQuote((q) => (q - 1 + quotes.length) % quotes.length)} aria-label="Previous note">
             ←
           </button>
-          <button className="cr-arrow cr-qnext" aria-label="Next quote" onClick={() => setQuote((quote + 1) % nQ)}>
+          <button className="cr-arrow cr-qnext" onClick={() => setQuote((q) => (q + 1) % quotes.length)} aria-label="Next note">
             →
           </button>
         </div>
@@ -961,42 +866,82 @@ export default function CrimsonReachTemplate({
         </div>
       </section>
 
-      {/* contacts & stats */}
+      {/* contacts & stats - High-Craft Engineer Profile */}
       <section className="cr-contact" id="contact">
         <div className="cr-cgrid">
-          <div className="cr-people">
-            <article className="cr-person">
-              <div className="cr-avatar">{avatar ? <img src={avatar} alt={name} width={56} height={56} /> : <span className="cr-avatar-k">{name[0]}</span>}</div>
+          <div className="cr-person-card">
+            <div className="cr-person-top">
+              <div className="cr-avatar-badge">
+                {avatar ? (
+                  <img src={avatar} alt={name} className="cr-avatar-img" width={48} height={48} />
+                ) : (
+                  <span className="cr-avatar-k">A</span>
+                )}
+              </div>
               <div>
-                <h3>{name}</h3>
-                <p>{role}</p>
+                <h3 className="cr-person-name">{name}</h3>
+                <p className="cr-person-role">B.Tech in Electronics &amp; Communication Engineering</p>
+                <div className="cr-person-pill">
+                  <span className="cr-pill-dot" />
+                  <span>MIT-WPU · CGPA 8.58 · Available</span>
+                </div>
               </div>
-              <div className="cr-plinks">
-                <a href={"mailto:" + email}>Email</a>
-                {linkedinUrl && (
-                  <a href={linkedinUrl} target="_blank" rel="noreferrer">
-                    LinkedIn ↗
-                  </a>
-                )}
-                {githubUrl && (
-                  <a href={githubUrl} target="_blank" rel="noreferrer">
-                    GitHub ↗
-                  </a>
-                )}
-                <button onClick={copy}>{copied ? "Copied" : "Copy Email"}</button>
+            </div>
+
+            <p className="cr-person-desc">
+              Specialized in automotive ADAS calibration, cycle-accurate gem5 microarchitecture modeling, embedded C/C++ firmware, and noise-conditioned deep learning for Massive MIMO.
+            </p>
+
+            <div className="cr-person-meta">
+              <div className="cr-meta-cell">
+                <span className="cr-meta-lbl">Location</span>
+                <span className="cr-meta-txt">{location}</span>
               </div>
-            </article>
+              <div className="cr-meta-cell">
+                <span className="cr-meta-lbl">Direct Email</span>
+                <a href={"mailto:" + email} className="cr-meta-link">{email}</a>
+              </div>
+            </div>
+
+            <div className="cr-plinks">
+              <a href={"mailto:" + email} className="cr-btn" style={{ background: "var(--red)", color: "#fff", height: "38px" }}>
+                <Roll>Email Apurva</Roll>
+              </a>
+              {resumeUrl && (
+                <a
+                  className="cr-btn"
+                  href={resumeUrl}
+                  download="Apurva_Kumar_Resume.pdf"
+                  style={{ background: "rgba(255,255,255,.08)", color: "var(--ink)", border: "1px solid rgba(255,255,255,.14)", height: "38px" }}
+                >
+                  <Roll>Download Resume (PDF)</Roll>
+                </a>
+              )}
+              {linkedinUrl && (
+                <a href={linkedinUrl} target="_blank" rel="noreferrer" className="cr-btn" style={{ background: "rgba(255,255,255,.05)", color: "var(--ink)", border: "1px solid rgba(255,255,255,.1)", height: "38px" }}>
+                  LinkedIn ↗
+                </a>
+              )}
+              {githubUrl && (
+                <a href={githubUrl} target="_blank" rel="noreferrer" className="cr-btn" style={{ background: "rgba(255,255,255,.05)", color: "var(--ink)", border: "1px solid rgba(255,255,255,.1)", height: "38px" }}>
+                  GitHub ↗
+                </a>
+              )}
+            </div>
           </div>
+
           <div className="cr-stats">
             {stats.map((s, i) => (
               <div key={s.label} className="cr-stat">
                 <div className="cr-num">
-                  <span className="cr-odo">
-                    <span className="cr-odo-col">
-                      <span>{counts[i] || 0}</span>
+                  {s.displayValue || (
+                    <span className="cr-odo">
+                      <span className="cr-odo-col">
+                        <span>{counts[i] || 0}</span>
+                      </span>
+                      <span>+</span>
                     </span>
-                    <span>+</span>
-                  </span>
+                  )}
                 </div>
                 <div>
                   <h3>{s.label}</h3>
@@ -1008,10 +953,17 @@ export default function CrimsonReachTemplate({
         </div>
       </section>
 
-      {/* closing card */}
+      {/* closing card - Automotive Engineering Digital Twin */}
       <section className="cr-ctawrap">
         <div className="cr-cta">
-          <img className="cr-cta-img" src={img("statue")} alt="" loading="lazy" width={1536} height={1024} />
+          <img
+            className="cr-cta-img"
+            src={ctaImg || withBase("assets/projects/automotive_cta_backdrop.png")}
+            alt="Automotive Systems & Real-Time Engineering"
+            loading="lazy"
+            width={1536}
+            height={1024}
+          />
           <span className="cr-cta-tint" />
           <div className="cr-cta-text">
             <p>{ctaHead}</p>
@@ -1026,23 +978,23 @@ export default function CrimsonReachTemplate({
               )}
             </h2>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "24px" }}>
-              <a className="cr-btn" href={"mailto:" + email}>
-                <Roll>Email Apurva</Roll>
+              <a className="cr-btn" href={"mailto:" + email} style={{ background: "var(--red)", color: "#fff", height: "42px", padding: "0 22px" }}>
+                <Roll>Email Apurva Directly</Roll>
               </a>
               {resumeUrl && (
                 <a
                   className="cr-btn"
                   href={resumeUrl}
                   download="Apurva_Kumar_Resume.pdf"
-                  style={{ background: "rgba(255,255,255,0.12)", color: "var(--ink)", border: "1px solid rgba(255,255,255,0.2)" }}
+                  style={{ background: "rgba(255,255,255,0.12)", color: "var(--ink)", border: "1px solid rgba(255,255,255,0.2)", height: "42px", padding: "0 22px" }}
                 >
-                  <Roll>Download Resume (PDF)</Roll>
+                  <Roll>Download Official Resume (PDF)</Roll>
                 </a>
               )}
             </div>
           </div>
           <footer className="cr-foot">
-            <span>&copy; {year} Apurva Kumar | Electronics &amp; Communication Engineering</span>
+            <span>&copy; {year} Apurva Kumar · Electronics &amp; Communication Engineering</span>
             <button onClick={copy} className="cr-mail">
               {copied ? "Copied to clipboard" : email}
             </button>
@@ -1082,19 +1034,16 @@ const CSS =
   ".cr-roll{display:inline-grid;overflow:hidden;line-height:1.2;vertical-align:top}" +
   ".cr-roll>span{grid-area:1/1;transition:transform .5s " + EASE + "}" +
   ".cr-roll>span+span{transform:translateY(105%)}" +
-  ".cr-navwrap{position:sticky;top:0;height:0;z-index:60}" +
-  ".cr-nav{position:absolute;left:50%;top:32px;transform:translateX(-50%);width:calc(100% - 64px);height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 36px;border-radius:16px 16px 0 0;background:linear-gradient(rgba(60,4,4,.35),rgba(60,4,4,0));border:1px solid transparent;transition:width .7s " + EASE + ",height .7s " + EASE + ",top .7s " + EASE + ",background .5s,border-color .5s,border-radius .7s,box-shadow .5s,padding .7s " + EASE + "}" +
-  ".cr-nav.cr-pill{top:16px;width:min(940px,calc(100% - 32px));height:52px;padding:0 14px 0 24px;border-radius:12px;background:rgba(20,20,22,.88);border-color:rgba(255,255,255,.12);box-shadow:0 10px 30px rgba(0,0,0,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}" +
-  ".cr-logo{font-family:" + SERIF + ";font-style:italic;font-size:26px;letter-spacing:-.03em;color:var(--ink)}" +
-  ".cr-nav.cr-pill .cr-logo{font-size:20px}" +
-  ".cr-links{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:24px;font-size:13.5px}" +
+  ".cr-navwrap{position:sticky;top:0;z-index:80;width:100%;background:rgba(7,7,9,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);transition:background .3s,border-color .3s}" +
+  ".cr-nav{position:relative;width:100%;max-width:1300px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}" +
+  ".cr-logo{display:flex;align-items:center;gap:10px;font-family:" + SERIF + ";font-style:italic;font-size:22px;letter-spacing:-.02em;color:var(--ink)}" +
+  ".cr-nav-logo-img{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(46,140,255,.4))}" +
+  ".cr-bdot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);display:inline-block}" +
+  ".cr-links{display:flex;gap:24px;font-size:13.5px}" +
   ".cr-links a{opacity:.82;transition:opacity .3s;padding:4px 6px}" +
   ".cr-links a:hover{opacity:1}" +
   ".cr-btn{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:8px;background:var(--ink);color:#0a0a0c;font-size:12.5px;font-weight:500;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.25);transition:transform .3s " + EASE + ",background .3s}" +
   ".cr-btn:hover{transform:translateY(-1px);background:#fff}" +
-  ".cr-git-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:11.5px;color:var(--mute);transition:all .2s}" +
-  ".cr-git-pill:hover{background:rgba(255,255,255,.1);color:var(--ink)}" +
-  ".cr-git-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 6px #2ecc71;flex-shrink:0}" +
   ".cr-burger{display:none;width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--ink);flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;position:relative;z-index:70}" +
   ".cr-burger span{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .3s,opacity .3s}" +
   ".cr-mob-drawer{position:fixed;inset:0;background:rgba(7,7,9,.97);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);z-index:90;display:flex;flex-direction:column;padding:84px 28px 36px;gap:24px;overflow-y:auto;animation:cr-fade .3s ease-out both}" +
@@ -1102,7 +1051,7 @@ const CSS =
   ".cr-mob-links a{color:var(--ink);transition:color .2s}" +
   ".cr-mob-links a:hover{color:var(--red)}" +
   ".cr-mob-actions{margin-top:auto;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:20px}" +
-  ".cr-hero{position:relative;padding:32px;min-height:520px}" +
+  ".cr-hero{position:relative;padding:24px 32px 32px;min-height:520px}" +
   ".cr-hero-card{position:relative;height:100%;border-radius:16px;overflow:hidden;background:#350302;container-type:size}" +
   ".cr-hero-art{position:absolute;left:50%;top:50%;width:max(112cqw,168cqh);aspect-ratio:3/2;transform:translate(-50%,-50%)}" +
   ".cr-hero-plate{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
@@ -1130,31 +1079,22 @@ const CSS =
   ".cr-mtrack{display:flex;width:max-content;animation:cr-marquee 30s linear infinite}" +
   ".cr-mset{display:flex;gap:44px;padding-right:44px}" +
   ".cr-mlogo{font-size:15px;color:rgba(255,255,255,.6);white-space:nowrap}" +
-  ".cr-journey{position:relative;height:340vh}" +
-  ".cr-jstage{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1600px}" +
-  ".cr-jtitle{position:absolute;left:0;right:0;top:clamp(84px,12vh,112px);font-family:" + SERIF + ";font-weight:400;font-size:clamp(30px,3.2vw,48px);text-align:center;color:var(--ink);padding:0 20px;z-index:2}" +
-  ".cr-jcards{position:absolute;left:50%;top:54%;width:0;height:0;transform-style:preserve-3d}" +
-  ".cr-panel{position:absolute;left:0;top:0;transform-style:preserve-3d;will-change:transform}" +
-  ".cr-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:none}" +
-  ".cr-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden}" +
-  ".cr-front{background-repeat:no-repeat;background-color:#b5100a;background-position:center;background-size:cover}" +
-  ".cr-back{transform:rotateY(180deg);container-type:inline-size;box-shadow:0 30px 60px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);border-radius:12px}" +
-  ".cr-back-in{position:absolute;inset:0;padding:9cqw 9cqw 10cqw;display:flex;flex-direction:column}" +
-  ".cr-jicon{flex:none;width:9cqw;height:9cqw;opacity:.75}" +
-  ".cr-back-in h3{font-family:" + SERIF + ";font-size:9.7cqw;line-height:1.15;font-weight:400;letter-spacing:-.03em;white-space:pre-line;margin-bottom:auto;margin-top:28cqw;color:var(--ink)}" +
-  ".cr-back-in p{font-size:max(11px,4.36cqw);line-height:1.4;opacity:.85;color:var(--mute)}" +
-  ".cr-tone-silver{color:#151515;background:repeating-linear-gradient(115deg,rgba(255,255,255,.07) 0 1px,transparent 1px 3px),linear-gradient(165deg,#ececec,#a8a8a8 70%,#9a9a9a)}" +
-  ".cr-tone-silver .cr-back-in h3{color:#111}" +
-  ".cr-tone-silver .cr-back-in p{color:#333}" +
-  ".cr-tone-silver .cr-jicon{color:#111}" +
-  ".cr-tone-red{color:#fff;background:linear-gradient(180deg,#e2281d,#a3110b 70%,#7a0c08)}" +
-  ".cr-tone-red .cr-back-in h3{color:#fff}" +
-  ".cr-tone-red .cr-back-in p{color:rgba(255,255,255,.9)}" +
-  ".cr-tone-red .cr-jicon{color:#fff}" +
-  ".cr-tone-dark{color:#d8d5ce;background:linear-gradient(165deg,#2c2c2c,#161616);border:1px solid rgba(255,255,255,.08)}" +
-  ".cr-tone-dark .cr-back-in h3{color:#fff}" +
-  ".cr-tone-dark .cr-back-in p{color:rgba(255,255,255,.7)}" +
-  ".cr-tone-dark .cr-jicon{color:var(--red)}" +
+  ".cr-journey{position:relative;padding:clamp(70px,10vh,110px) 24px;background:var(--bg);border-bottom:1px solid var(--line)}" +
+  ".cr-jstage{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}" +
+  ".cr-jhead{text-align:center;max-width:800px;margin-bottom:44px}" +
+  ".cr-jtitle{font-family:" + SERIF + ";font-weight:400;font-size:clamp(30px,3.4vw,48px);color:var(--ink)}" +
+  ".cr-jsub{margin-top:10px;font-size:15px;color:var(--mute)}" +
+  ".cr-jgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;width:100%}" +
+  ".cr-jcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:14px;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}" +
+  ".cr-jcard:hover{border-color:rgba(255,255,255,.2);transform:translateY(-3px)}" +
+  ".cr-jcard-top{display:flex;justify-content:space-between;align-items:center}" +
+  ".cr-jidx{font-family:monospace;font-size:12px;color:#ff786e;letter-spacing:.08em}" +
+  ".cr-jicon{width:28px;height:28px;opacity:.85}" +
+  ".cr-jcard-title{font-family:" + SERIF + ";font-size:24px;color:var(--ink);line-height:1.2}" +
+  ".cr-jcard-body{font-size:14px;line-height:1.65;color:var(--mute)}" +
+  ".cr-jcard-red{border-top:2px solid var(--red)}" +
+  ".cr-jcard-silver{border-top:2px solid rgba(255,255,255,.25)}" +
+  ".cr-jcard-dark{border-top:2px solid rgba(255,255,255,.12)}" +
   ".cr-services{padding:clamp(80px,10vh,130px) clamp(24px,5vw,72px)}" +
   ".cr-head{text-align:center;max-width:760px;margin:0 auto clamp(48px,6vh,72px)}" +
   ".cr-h2{font-family:" + SERIF + ";font-weight:400;font-size:clamp(32px,3.5vw,52px);line-height:1.15;letter-spacing:-.03em;color:var(--ink)}" +
@@ -1171,17 +1111,17 @@ const CSS =
   ".cr-row-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s " + EASE + "}" +
   ".cr-row:hover .cr-row-img img{transform:scale(1.05)}" +
   ".cr-vision{display:flex;width:fit-content;margin:44px auto 0;height:44px;padding:0 24px;border-radius:10px;font-size:14px}" +
-  ".cr-feat{position:relative;height:240vh}" +
-  ".cr-fstage{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;overflow:hidden}" +
-  ".cr-fhead{text-align:center;position:absolute;top:clamp(50px,8vh,80px);transform-origin:50% 0;width:100%;max-width:1200px}" +
-  ".cr-ftitle{font-family:" + SERIF + ";font-weight:400;font-size:clamp(30px,3.4vw,50px);letter-spacing:-.03em;color:var(--ink);transition:none}" +
-  ".cr-fsub{margin-top:6px;font-size:14.5px;color:var(--mute)}" +
-  ".cr-filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px auto 0;max-width:800px}" +
+  ".cr-feat{position:relative;padding:clamp(70px,9vh,110px) 24px}" +
+  ".cr-fstage{max-width:1300px;margin:0 auto;display:flex;flex-direction:column;align-items:center}" +
+  ".cr-fhead{text-align:center;width:100%;max-width:960px;margin-bottom:32px;position:relative}" +
+  ".cr-ftitle{font-family:" + SERIF + ";font-weight:400;font-size:clamp(30px,3.4vw,48px);letter-spacing:-.03em;color:var(--ink)}" +
+  ".cr-fsub{margin-top:8px;font-size:15px;color:var(--mute)}" +
+  ".cr-filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px auto 0;max-width:800px}" +
   ".cr-filter-btn{font-size:12px;padding:5px 13px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--mute);cursor:pointer;transition:all .2s}" +
   ".cr-filter-btn:hover{background:rgba(255,255,255,.1);color:var(--ink)}" +
   ".cr-filter-btn[data-active='true']{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 12px rgba(200,43,32,.45)}" +
-  ".cr-fcar{width:100%;max-width:1200px;margin-top:auto;margin-bottom:clamp(30px,6vh,70px)}" +
-  ".cr-ftrack{position:relative;height:clamp(400px,50vh,520px);display:grid;place-items:center}" +
+  ".cr-fcar{width:100%;max-width:1200px;margin:0 auto;position:relative}" +
+  ".cr-ftrack{position:relative;height:clamp(440px,54vh,540px);display:grid;place-items:center}" +
   ".cr-work{position:absolute;width:min(540px,86vw);border-radius:14px;overflow:hidden;background:#141418;border:1px solid var(--line);padding:16px;cursor:pointer;transition:transform .7s " + EASE + ",opacity .6s,filter .6s;transform:translateX(calc(var(--d) * 62%)) scale(calc(1 - abs(var(--d)) * 0.16));z-index:calc(10 - abs(var(--d)))}" +
   ".cr-work[data-d='far']{opacity:0;pointer-events:none}" +
   ".cr-work[data-d='s']{opacity:.45;filter:blur(2px)}" +
@@ -1190,8 +1130,8 @@ const CSS =
   ".cr-work h3{font-family:" + SERIF + ";font-size:19px;margin:12px 0 6px;color:var(--ink)}" +
   ".cr-tags{display:flex;gap:7px;flex-wrap:wrap}" +
   ".cr-tags span{font-size:11.5px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.07);color:var(--mute)}" +
-  ".cr-inspect-btn{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);opacity:.78;background:none;border:none;cursor:pointer;transition:all .2s;padding:0}" +
-  ".cr-inspect-btn:hover{opacity:1;color:var(--red)}" +
+  ".cr-inspect-btn,.cr-source-btn{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);opacity:.78;background:none;border:none;cursor:pointer;transition:all .2s;padding:0}" +
+  ".cr-inspect-btn:hover,.cr-source-btn:hover{opacity:1;color:var(--red)}" +
   ".cr-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:var(--ink);display:grid;place-items:center;font-size:18px;z-index:25;transition:background .3s,transform .3s}" +
   ".cr-arrow:hover{background:rgba(255,255,255,.2);transform:translateY(-50%) scale(1.08)}" +
   ".cr-prev{left:16px}" +
@@ -1203,7 +1143,7 @@ const CSS =
   ".cr-modal-close:hover{background:rgba(255,255,255,.18)}" +
   ".cr-modal-img{width:100%;border-radius:12px;overflow:hidden;background:#05070a;border:1px solid rgba(255,255,255,.08);aspect-ratio:16/10;margin-bottom:18px;display:flex;align-items:center;justify-content:center}" +
   ".cr-modal-img img{width:100%;height:100%;object-fit:contain}" +
-  ".cr-modal-tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--red);margin-bottom:8px;font-family:monospace}" +
+  ".cr-modal-tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#ff786e;margin-bottom:8px;font-family:monospace}" +
   ".cr-modal h3{font-family:" + SERIF + ";font-size:23px;line-height:1.2;color:var(--ink);margin-bottom:12px}" +
   ".cr-modal-desc{font-size:14px;line-height:1.6;color:var(--mute);margin-bottom:18px}" +
   ".cr-modal-specs{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px;margin-bottom:22px}" +
@@ -1217,9 +1157,8 @@ const CSS =
   ".cr-tile:hover{background:rgba(255,255,255,.07);color:var(--ink);transform:translateY(-2px)}" +
   ".cr-quotes{padding:clamp(80px,10vh,130px) clamp(24px,5vw,72px)}" +
   ".cr-qstage{position:relative;max-width:880px;height:340px;margin:0 auto;display:grid;place-items:center}" +
-  ".cr-quote{position:absolute;inset:0;display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;transition:opacity .6s,transform .6s " + EASE + ";opacity:0;transform:scale(.95);pointer-events:none}" +
-  ".cr-quote[data-c]{opacity:1;transform:scale(1);pointer-events:auto}" +
-  ".cr-quote img{width:100%;aspect-ratio:1;border-radius:12px;object-fit:cover}" +
+  ".cr-quote{position:absolute;inset:0;display:grid;grid-template-columns:112px 1fr;gap:40px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px 44px;transition:opacity .6s,transform .6s}" +
+  ".cr-quote img{width:112px;height:auto;object-fit:contain;border-radius:8px}" +
   ".cr-qbody blockquote{font-family:" + SERIF + ";font-size:clamp(16px,1.6vw,22px);line-height:1.45;color:var(--ink);margin-bottom:20px}" +
   ".cr-qbody figcaption strong{display:block;font-size:16px;color:var(--ink)}" +
   ".cr-qbody figcaption span{font-size:13px;color:var(--mute)}" +
@@ -1229,33 +1168,39 @@ const CSS =
   ".cr-dotsbar button{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .3s,transform .3s}" +
   ".cr-dotsbar button[aria-selected='true']{background:#fff;transform:scale(1.3)}" +
   ".cr-contact{padding:clamp(80px,10vh,130px) clamp(24px,5vw,72px)}" +
-  ".cr-cgrid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:1100px;margin:0 auto}" +
-  ".cr-people{display:grid;grid-template-columns:1fr 1fr;gap:20px}" +
-  ".cr-person{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px;transition:border-color .3s,transform .3s}" +
-  ".cr-person:hover{border-color:rgba(255,255,255,.2);transform:translateY(-2px)}" +
-  ".cr-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;background:#24242a;display:grid;place-items:center;font-weight:600}" +
-  ".cr-avatar img{width:100%;height:100%;object-fit:cover}" +
-  ".cr-avatar-k{background:var(--red);color:#fff;font-size:20px;font-family:" + SERIF + "}" +
-  ".cr-person h3{font-family:" + SERIF + ";font-size:24px;line-height:1.1;color:var(--ink)}" +
-  ".cr-person p{font-size:13.5px;color:var(--mute);margin-top:-6px}" +
-  ".cr-plinks{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}" +
-  ".cr-plinks a,.cr-plinks button{font-size:12.5px;padding:5px 11px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--ink);transition:background .3s}" +
-  ".cr-plinks a:hover,.cr-plinks button:hover{background:rgba(255,255,255,.16)}" +
-  ".cr-stats{display:flex;flex-direction:column;gap:18px}" +
+  ".cr-cgrid{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;max-width:1200px;margin:0 auto;align-items:start}" +
+  ".cr-person-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:20px;transition:border-color .3s}" +
+  ".cr-person-card:hover{border-color:rgba(255,255,255,.2)}" +
+  ".cr-person-top{display:flex;gap:18px;align-items:center}" +
+  ".cr-avatar-badge{width:56px;height:56px;border-radius:12px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:700;font-size:24px;font-family:" + SERIF + ";box-shadow:0 0 16px rgba(200,43,32,.45);flex-shrink:0;overflow:hidden;padding:2px}" +
+  ".cr-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:10px}" +
+  ".cr-person-name{font-family:" + SERIF + ";font-size:26px;color:var(--ink);line-height:1.15}" +
+  ".cr-person-role{font-size:13.5px;color:var(--mute);margin-top:2px}" +
+  ".cr-person-pill{display:inline-flex;align-items:center;gap:7px;padding:3px 10px;border-radius:12px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);font-size:11.5px;color:#2ecc71;margin-top:8px}" +
+  ".cr-pill-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;box-shadow:0 0 6px #2ecc71}" +
+  ".cr-person-desc{font-size:14px;line-height:1.65;color:rgba(240,236,225,.8)}" +
+  ".cr-person-meta{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}" +
+  ".cr-meta-cell{display:flex;flex-direction:column;gap:3px}" +
+  ".cr-meta-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);font-family:monospace}" +
+  ".cr-meta-txt{font-size:13px;color:var(--ink)}" +
+  ".cr-meta-link{font-size:13px;color:var(--ink);text-decoration:underline;text-underline-offset:2px;transition:color .2s}" +
+  ".cr-meta-link:hover{color:var(--red)}" +
+  ".cr-plinks{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}" +
+  ".cr-stats{display:flex;flex-direction:column;gap:16px}" +
   ".cr-stat{display:flex;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;align-items:center}" +
-  ".cr-num{font-family:" + SERIF + ";font-size:clamp(36px,3.8vw,52px);color:#ffe4e4;min-width:2.2ch}" +
-  ".cr-stat h3{font-family:" + SERIF + ";font-size:19px;margin-bottom:4px;color:var(--ink)}" +
+  ".cr-num{font-family:" + SERIF + ";font-size:clamp(32px,3.5vw,46px);color:#ffe4e4;min-width:2.2ch}" +
+  ".cr-stat h3{font-family:" + SERIF + ";font-size:18px;margin-bottom:4px;color:var(--ink)}" +
   ".cr-stat p{font-size:13px;line-height:1.45;color:var(--mute)}" +
   ".cr-odo{display:inline-flex;overflow:hidden;height:1.1em;line-height:1.1}" +
   ".cr-odo-col{display:inline-block}" +
   ".cr-odo-col>span{display:flex;flex-direction:column;transition:transform .7s " + EASE + "}" +
   ".cr-ctawrap{padding:32px}" +
-  ".cr-cta{position:relative;border-radius:16px;overflow:hidden;min-height:560px;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(40px,8vh,80px) 32px 32px;background:#240303}" +
-  ".cr-cta-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}" +
-  ".cr-cta-tint{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(200,30,20,.45),rgba(15,2,2,.85));z-index:1}" +
+  ".cr-cta{position:relative;border-radius:16px;overflow:hidden;min-height:540px;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(40px,8vh,80px) 32px 32px;background:#1a0305}" +
+  ".cr-cta-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.75}" +
+  ".cr-cta-tint{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(160,20,25,.55),rgba(12,2,4,.92));z-index:1}" +
   ".cr-cta-text{position:relative;z-index:2;text-align:center;margin:auto}" +
-  ".cr-cta-text p{font-size:16px;color:rgba(255,210,210,.8);margin-bottom:12px}" +
-  ".cr-cta-text h2{font-family:" + SERIF + ";font-weight:400;font-size:clamp(36px,4.5vw,68px);line-height:1.15;letter-spacing:-.03em;color:#fff}" +
+  ".cr-cta-text p{font-size:15px;color:rgba(255,210,210,.85);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em}" +
+  ".cr-cta-text h2{font-family:" + SERIF + ";font-weight:400;font-size:clamp(34px,4.2vw,62px);line-height:1.18;letter-spacing:-.03em;color:#fff}" +
   ".cr-foot{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;font-size:12.8px;color:rgba(255,204,204,.7);border-top:1px solid rgba(255,255,255,.1);padding-top:24px;margin-top:40px}" +
   ".cr-mail{opacity:.85;transition:opacity .3s}" +
   ".cr-mail:hover{opacity:1}" +
@@ -1264,7 +1209,6 @@ const CSS =
   ".cr-flinks a:hover{color:#fff}" +
   "@media(max-width:860px){" +
   ".cr-links{display:none}" +
-  ".cr-git-pill{display:none}" +
   ".cr-burger{display:flex}" +
   ".cr-row{grid-template-columns:1fr;gap:16px;padding:20px}" +
   ".cr-row-img{max-height:220px}" +
@@ -1273,7 +1217,7 @@ const CSS =
   ".cr-quote{position:relative;inset:auto;grid-template-columns:1fr;gap:20px;padding:24px}" +
   ".cr-quote img{width:80px}" +
   ".cr-cgrid{grid-template-columns:1fr}" +
-  ".cr-people{grid-template-columns:1fr}" +
+  ".cr-jgrid{grid-template-columns:1fr}" +
   ".cr-foot{flex-direction:column;gap:14px;text-align:center}" +
   "}" +
   "@media(max-width:480px){" +
@@ -1281,6 +1225,7 @@ const CSS =
   ".cr-ctawrap{padding:16px}" +
   ".cr-qprev{left:0}" +
   ".cr-qnext{right:0}" +
+  ".cr-person-meta{grid-template-columns:1fr}" +
   "}" +
   "@keyframes cr-fade{from{opacity:0}to{opacity:1}}" +
   "@keyframes cr-breathe{from{opacity:.4;transform:scale(.95)}to{opacity:.8;transform:scale(1.1)}}" +

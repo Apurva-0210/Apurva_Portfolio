@@ -96,3 +96,58 @@
 - **Root Cause**: Lack of functional separation between UI render cycle and pure math algorithms.
 - **Resolution**: Extracted `clamp`, `seg`, `loopOffset`, `wordLevel`, `countAt`, `journeyFrame`, and `featuredFrame` into a dedicated pure utility module.
 - **Verification Result**: VERIFIED (Zero HMR warnings; 100% covered by Vitest unit tests).
+
+---
+
+### DEF-009: Sticky Navigation Merging on Scroll-Up with Page Content
+- **Defect ID**: DEF-009
+- **Severity**: **High**
+- **Affected Component**: Navigation Header (`.cr-navwrap`) & Resume CTA
+- **Description**: Scrolling up caused the navigation header and "Resume ↓" button to visually collide and merge with underlying hero and section text.
+- **Root Cause**: `.cr-navwrap` had height 0 and transparent background with dynamically toggled `.cr-pill` class that stripped backdrops on scroll upward.
+- **Resolution**: Implemented persistent sticky glass header (`height: 64px`, `background: rgba(7,7,9,0.92)`, `backdrop-filter: blur(20px)`, `border-bottom: 1px solid rgba(255,255,255,0.08)`) with fixed z-index hierarchy.
+- **Verification Result**: VERIFIED (No layout collision or text merging across desktop and mobile viewports).
+
+---
+
+### DEF-010: Featured Engineering Work Title Overshadowing Slide
+- **Defect ID**: DEF-010
+- **Severity**: **High**
+- **Affected Component**: Featured Works Section (`.cr-feat`)
+- **Description**: The "Featured Engineering Work" heading expanded with an aggressive `scale(2.8)` animation across 240vh scroll height, visually masking and delaying carousel interaction.
+- **Root Cause**: Hardcoded scale transformation in template pinning scroll progress.
+- **Resolution**: Eliminated the forced scale distortion, adopting a natural flex-flow heading and sticky carousel stage that keeps project cards immediately visible and interactive.
+- **Verification Result**: VERIFIED (Project cards visible immediately upon scrolling to section; smooth carousel navigation).
+
+---
+
+### DEF-011: Legacy "Three Layers. One Architecture." Narrative Drop
+- **Defect ID**: DEF-011
+- **Severity**: **Medium**
+- **Affected Component**: Journey Section (`.cr-journey`)
+- **Description**: The template hardcoded a 3-panel layout ("Three Layers. One Architecture."), which artificially truncated the engineer's 4 core disciplines, causing the 4th pillar to break layout.
+- **Root Cause**: Rigid 3-item array assumption in 3D dune flip animation.
+- **Resolution**: Replaced with an authentic 2x2 responsive matrix ("Core Engineering Disciplines") showcasing: (1) Automotive Systems & ADAS, (2) Embedded & Real-Time Systems, (3) Computer Architecture, (4) Applied AI/ML & Deep Learning.
+- **Verification Result**: VERIFIED (All 4 disciplines render symmetrically across 360px–1920px).
+
+---
+
+### DEF-012: Inaccurate CGPA Record (8.62 vs 8.58)
+- **Defect ID**: DEF-012
+- **Severity**: **Medium**
+- **Affected Component**: Profile Data (`profile.ts`, `Home.tsx`, unit tests)
+- **Description**: Candidate's B.Tech ECE CGPA was represented as 8.62 in legacy files instead of verified 8.58.
+- **Root Cause**: Stale placeholder data in initial setup.
+- **Resolution**: Updated all references across `profile.ts`, `Home.tsx`, and `portfolio.test.ts` to verified 8.58.
+- **Verification Result**: VERIFIED (Vitest unit tests and E2E verification pass).
+
+---
+
+### DEF-013: Integration of Authentic Brand Identity and Project Ecosystem
+- **Defect ID**: DEF-013
+- **Severity**: **Low**
+- **Affected Component**: Brand Assets & Navigation
+- **Description**: Portfolio used generic text monogram ("Apurva.") and lacked user's custom brand emblem and commercial ecosystem (Veyrion).
+- **Root Cause**: Placeholder brand tokens.
+- **Resolution**: Integrated custom automotive-circuit emblem (`apurva_emblem.png`) into navigation and contact card, updated brand to "Apurva Kumar", and cataloged the complete 12+ project portfolio including Veyrion Product Ecosystem.
+- **Verification Result**: VERIFIED (Emblem renders crisp across navigation; all 13 project cards verified).

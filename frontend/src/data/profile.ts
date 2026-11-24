@@ -41,7 +41,7 @@ export type ResearchItem = {
 };
 
 export const withBase = (path: string) => {
-  const base = import.meta.env.BASE_URL || "/";
+  const base = (typeof import.meta !== "undefined" && import.meta.env?.BASE_URL) || "/";
   const normalizedBase = base.endsWith("/") ? base : `${base}/`;
   return `${normalizedBase}${path.replace(/^\//, "")}`;
 };
@@ -53,7 +53,7 @@ export const profile = {
   specialization: "AI & ML Specialization",
   university: "MIT World Peace University",
   graduation: "June 2027",
-  cgpa: "8.62",
+  cgpa: "8.58",
   location: "Pune, Maharashtra, India",
   email: "apurvak916@gmail.com",
   githubUsername: "Apurva-0210",

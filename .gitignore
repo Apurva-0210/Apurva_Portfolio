@@ -68,3 +68,4 @@ venv/
 # Overlay / platform dumps
 **/.emergent/recordings/
 .emergent/
+test-results/
